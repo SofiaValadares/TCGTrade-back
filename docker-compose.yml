@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  arq-api-sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    user: root
+    restart: always
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: C@1x@squ@d4
+      MSSQL_PID: Developer
+    ports:
+      - 1433:1433
+    healthcheck:
+      test: [ "CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P C@1x@squ@d4 -C -Q 'SELECT 1' || exit 1" ]
+      interval: 10s
+      retries: 10
+      start_period: 10s
+      timeout: 3s
+  arq-sqlserver.configurator:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+    depends_on:
+      arq-api-sqlserver:
+        condition: service_healthy
+    command: >
+      bash -c '
+      /opt/mssql-tools18/bin/sqlcmd -S arq-api-sqlserver -U sa -P C@1x@squ@d4 -C -d master -i docker-entrypoint-initdb.d/init.sql;
+      echo "All done!";
+      '
+  arq-api-spring_boot:
+    build: .
+    restart: always
+    ports:
+      - 8080:8080
+      - 5005:5005
+    depends_on:
+      arq-api-sqlserver:
+        condition: service_healthy
+      arq-sqlserver.configurator:
+        condition: service_completed_successfully

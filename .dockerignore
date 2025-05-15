@@ -1,0 +1,16 @@
+README.md
+docker-compose.yml
+.git
+.cache
+reports
+.gitignore
+poc
+logs/*
+tmp
+status/*
+keys/*
+.project
+.settings
+data/
+target/
+.classpath/
