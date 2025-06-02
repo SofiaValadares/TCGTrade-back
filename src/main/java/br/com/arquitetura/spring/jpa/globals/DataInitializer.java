@@ -58,6 +58,55 @@ public class DataInitializer {
                 userRepository.save(adminUser);
             }
 
+            var nomePesquisaTipo = "TIPO POKEMON";
+            Optional<DomainModel> domainTipoOpt = domainRepository.findByName(nomePesquisaTipo);
+            if (domainTipoOpt.isEmpty()) {
+                DomainModel domainTipo = new DomainModel();
+                domainTipo.setName(nomePesquisaTipo);
+                domainTipo.setDescription("Lista de todos os tipos de pokemon.");
+                domainTipo.setEnabled(true);
+                domainTipo.setUserRegistered(ROLE_ADMIN);
+                domainTipo.setDateRegistered(LocalDateTime.now());
+                domainRepository.save(domainTipo);
+
+                Optional<DomainModel> domainSave = domainRepository.findByName(nomePesquisaTipo);
+
+                List<DadosDomainItem> tipos = Arrays.asList(
+                        new DadosDomainItem("NORMAL", "normal"),
+                        new DadosDomainItem("FIRE", "fire"),
+                        new DadosDomainItem("WATER", "water"),
+                        new DadosDomainItem("ELECTRIC", "electric"),
+                        new DadosDomainItem("GRASS", "grass"),
+                        new DadosDomainItem("ICE", "ice"),
+                        new DadosDomainItem("FIGHTING", "fighting"),
+                        new DadosDomainItem("POISON", "poison"),
+                        new DadosDomainItem("GROUND", "ground"),
+                        new DadosDomainItem("FLYING", "flying"),
+                        new DadosDomainItem("PSYCHIC", "psychic"),
+                        new DadosDomainItem("BUG", "bug"),
+                        new DadosDomainItem("ROCK", "rock"),
+                        new DadosDomainItem("GHOST", "ghost"),
+                        new DadosDomainItem("DRAGON", "dragon"),
+                        new DadosDomainItem("DARK", "dark"),
+                        new DadosDomainItem("STEEL", "steel"),
+                        new DadosDomainItem("FAIRY", "fairy")
+                );
+
+                for (DadosDomainItem tipo : tipos) {
+                    DomainItemsModel domainItem = new DomainItemsModel();
+                    domainItem.setDomainModel(domainSave.get());
+                    domainItem.setCodDomainItems(tipo.getCodigo());
+                    domainItem.setName(tipo.getNome());
+                    domainItem.setEnabled(true);
+                    domainItem.setUserRegistered(ROLE_ADMIN);
+                    domainItem.setDateRegistered(LocalDateTime.now());
+
+                    domainItemsRepository.save(domainItem);
+                }
+            }
+
+
+
 
             // Importar Dominio Unidade Federativa
             var nomePesqusiaUF = "UNIDADE FEDERATIVA";
@@ -71,7 +120,7 @@ public class DataInitializer {
                 domainUF.setDateRegistered(LocalDateTime.now());
                 domainRepository.save(domainUF);
 
-                Optional<DomainModel> domanSave = domainRepository.findByName(nomePesqusiaUF);
+                Optional<DomainModel> domainSave = domainRepository.findByName(nomePesqusiaUF);
 
                 List<DadosDomainItem> ufs = Arrays.asList(
                         new DadosDomainItem("AC", "Acre"),
@@ -106,7 +155,7 @@ public class DataInitializer {
                 // Adicionando cada UF no repositório
                 for (DadosDomainItem uf : ufs) {
                     DomainItemsModel domainItem = new DomainItemsModel();
-                    domainItem.setDomainModel(domanSave.get());
+                    domainItem.setDomainModel(domainSave.get());
                     domainItem.setCodDomainItems(uf.getCodigo());
                     domainItem.setName(uf.getNome());
                     domainItem.setEnabled(true);
