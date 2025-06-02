@@ -13,9 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class PokemonServiceImpl implements PokemonService {
@@ -42,43 +40,49 @@ public class PokemonServiceImpl implements PokemonService {
     @Override
     public Page<PokemonModel> searchPokemon(String search) {
         Integer numPokemon;
-        Page<PokemonModel> pokemon;
+        List<PokemonModel> pokemons = new ArrayList<>();
 
-        Pageable pageable = PageRequest.of(0, 10);
+        pokemons.addAll(pokemonRepository.findPokemonModelByNameContainingIgnoreCase(search));
 
         try {
             numPokemon = Integer.parseInt(search);
-            pokemon = pokemonRepository.findByNumPokemon(pageable, numPokemon);
+            pokemons.addAll(pokemonRepository.findByNumPokemon(numPokemon));
+        } catch (NumberFormatException e) {}
 
-        } catch (Exception e) {
-            pokemon = pokemonRepository.findPokemonModelByNameContainingIgnoreCase(pageable, search);
+
+        Set<PokemonModel> uniqueSet = new LinkedHashSet<>(pokemons);
+        List<PokemonModel> finalList = new ArrayList<>(uniqueSet);
+
+        Pageable pageable = PageRequest.of(0, 10);
+
+        if (!finalList.isEmpty()) {
+            int start = (int) pageable.getOffset();
+            int end = Math.min(start + pageable.getPageSize(), finalList.size());
+            List<PokemonModel> paginatedList = finalList.subList(start, end);
+            return new PageImpl<>(paginatedList, pageable, finalList.size());
         }
 
-        if (pokemon != null && !pokemon.isEmpty()) {
-            return pokemon;
-        }
 
-         try {
+        try {
             PokemonResponseDto dto = pokeApiProxyService.getPokemon(search).block();
 
             if (dto != null) {
-                PokemonModel pokemonModel = new PokemonModel();
-                pokemonModel.setName(dto.name());
-                pokemonModel.setNumPokemon(dto.numPokemon());
-                pokemonModel.setPrimaryType(dto.primaryType());
-                pokemonModel.setSecondaryType(dto.secondaryType());
+                PokemonModel newPokemon = new PokemonModel();
+                newPokemon.setName(dto.name());
+                newPokemon.setNumPokemon(dto.numPokemon());
+                newPokemon.setPrimaryType(dto.primaryType());
+                newPokemon.setSecondaryType(dto.secondaryType());
 
-                pokemonRepository.save(pokemonModel);
+                pokemonRepository.save(newPokemon);
 
-
-                return new PageImpl<>(List.of(pokemonModel), pageable, 1);
+                return new PageImpl<>(List.of(newPokemon), pageable, 1);
             }
-        } catch (Exception e) {
-             return Page.empty(pageable);
-         }
+        } catch (Exception e) { }
+
 
         return Page.empty(pageable);
     }
+
 
     @Override
     public void deletePokemon(Long idPokemon) { pokemonRepository.deleteById(idPokemon); }

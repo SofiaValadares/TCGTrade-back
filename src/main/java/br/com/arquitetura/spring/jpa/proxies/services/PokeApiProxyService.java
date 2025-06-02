@@ -33,17 +33,19 @@ public class PokeApiProxyService {
                 .bodyToMono(Map.class)
                 .map(map -> {
                     Long id = Long.valueOf(map.get("id").toString());
-                    String name = map.get("name").toString();
+
+                    Map<String, Object> speciesMap = (Map<String, Object>) map.get("species");
+                    String name = speciesMap.get("name").toString();
+
                     Integer numPokemon = Integer.valueOf(map.get("id").toString());
 
-                    // Extrair a lista de tipos
                     var typesList = (java.util.List<Map<String, Object>>) map.get("types");
 
-                    // Assumindo que sempre existe pelo menos um tipo
+
                     var type1Map = (Map<String, Object>) typesList.get(0).get("type");
                     var primaryType = PokemonTypeEnum.valueOf(type1Map.get("name").toString().toUpperCase());
 
-                    // Pode haver ou não segundo tipo
+
                     PokemonTypeEnum secondaryType = null;
                     if (typesList.size() > 1) {
                         var type2Map = (Map<String, Object>) typesList.get(1).get("type");

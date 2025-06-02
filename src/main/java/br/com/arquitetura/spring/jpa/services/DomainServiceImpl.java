@@ -46,6 +46,7 @@ public class DomainServiceImpl implements DomainService {
 
     @Override
     public Page<DomainModel> getAllPageDomains(Specification<DomainModel> spec, Pageable pageable) {
+
         return domainRepository.findAll(spec, pageable);
     }
 }
