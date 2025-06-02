@@ -21,10 +21,10 @@ public class PokeApiProxyController {
         this.pokeApiProxyService = pokeApiProxyService;
     }
 
-//    @GetMapping("/pokemon")
-//    public Mono<ResponseEntity<PokemonResponseDto>> getDadosPokemon(@RequestParam String pokemon) {
-//        return pokeApiProxyService.getPokemon(pokemon)
-//                .map(ResponseEntity::ok)
-//                .defaultIfEmpty(ResponseEntity.status(404).build());
-//    }
+    @GetMapping("/pokemon")
+    public Mono<ResponseEntity<PokemonResponseDto>> getDadosPokemon(@RequestParam String pokemon) {
+        return pokeApiProxyService.getPokemon(pokemon)
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.status(404).build());
+    }
 }
