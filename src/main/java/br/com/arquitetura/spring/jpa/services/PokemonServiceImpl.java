@@ -39,13 +39,12 @@ public class PokemonServiceImpl implements PokemonService {
 
     @Override
     public Page<PokemonModel> searchPokemon(String search) {
-        Integer numPokemon;
         List<PokemonModel> pokemons = new ArrayList<>();
 
         pokemons.addAll(pokemonRepository.findPokemonModelByNameContainingIgnoreCase(search));
 
         try {
-            numPokemon = Integer.parseInt(search);
+            Integer numPokemon = Integer.parseInt(search);
             pokemons.addAll(pokemonRepository.findByNumPokemon(numPokemon));
         } catch (NumberFormatException e) {}
 
@@ -56,29 +55,14 @@ public class PokemonServiceImpl implements PokemonService {
         Pageable pageable = PageRequest.of(0, 10);
 
         if (!finalList.isEmpty()) {
-            int start = (int) pageable.getOffset();
-            int end = Math.min(start + pageable.getPageSize(), finalList.size());
-            List<PokemonModel> paginatedList = finalList.subList(start, end);
-            return new PageImpl<>(paginatedList, pageable, finalList.size());
+            return new PageImpl<>(finalList, pageable, finalList.size());
         }
 
+        PokemonModel newPokemon = pokeApiUse(search);
 
-        try {
-            PokemonResponseDto dto = pokeApiProxyService.getPokemon(search).block();
-
-            if (dto != null) {
-                PokemonModel newPokemon = new PokemonModel();
-                newPokemon.setName(dto.name());
-                newPokemon.setNumPokemon(dto.numPokemon());
-                newPokemon.setPrimaryType(dto.primaryType());
-                newPokemon.setSecondaryType(dto.secondaryType());
-
-                pokemonRepository.save(newPokemon);
-
-                return new PageImpl<>(List.of(newPokemon), pageable, 1);
-            }
-        } catch (Exception e) { }
-
+        if (newPokemon != null) {
+            return new PageImpl<>(List.of(newPokemon), pageable, 1);
+        }
 
         return Page.empty(pageable);
     }
@@ -102,5 +86,25 @@ public class PokemonServiceImpl implements PokemonService {
         return pokemonRepository.findById(id);
     }
 
+    private PokemonModel pokeApiUse(String search) {
 
+        try {
+            PokemonResponseDto dto = pokeApiProxyService.getPokemon(search).block();
+
+            if (dto == null) {
+                return null;
+            }
+
+            PokemonModel pokemon = new PokemonModel();
+            pokemon.setName(dto.name());
+            pokemon.setNumPokemon(dto.numPokemon());
+            pokemon.setPrimaryType(dto.primaryType());
+            pokemon.setSecondaryType(dto.secondaryType());
+
+            return pokemonRepository.save(pokemon);
+        } catch (ResourceNotFoundException e) {
+            return null;
+        }
+
+    }
 }
