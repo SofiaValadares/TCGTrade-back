@@ -11,11 +11,15 @@ import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -27,6 +31,25 @@ public class PokemonController {
     public PokemonController(PokemonService pokemonService, MessageSource messageSource) {
         this.pokemonService = pokemonService;
         this.messageSource = messageSource;
+    }
+
+    @GetMapping("/pokemon")
+    public ResponseEntity<List<PokemonResponseDto>> getAllPokemon() {
+        List<PokemonModel> pokemons = pokemonService.getAllPokemons();
+        return ResponseEntity.ok(mapToPokemonListResponseDto(pokemons));
+    }
+
+    @GetMapping("/pokemon/page")
+    public ResponseEntity<Page<PokemonResponseDto>> getAllPokemonPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "numPokemon") String sort,
+            @RequestParam(defaultValue = "asc") String order
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(order), sort));
+        Page<PokemonModel> pokemonModels = pokemonService.getAllPagePokemons(pageable);
+
+        return ResponseEntity.ok(pokemonModels.map(this::mapToPokemonResponseDto));
     }
 
     @PostMapping("/pokemon")
@@ -43,7 +66,7 @@ public class PokemonController {
             @PathVariable(value = "id") Long id,
             @RequestBody @Valid PokemonRecordDto pokemonRecordDto,
             Locale locale) {
-        Optional<PokemonModel> pokemonOptional = pokemonService.findPokemonById(id);
+        Optional<PokemonModel> pokemonOptional = pokemonService.getOnePokemon(id);
         if (pokemonOptional.isEmpty()) {
             throw ResourceNotFoundException.withMessage(
                     messageSource, ERROR_POKEMON_ID_NOTFOUND,
@@ -58,16 +81,23 @@ public class PokemonController {
         return ResponseEntity.status(HttpStatus.OK).body(mapToPokemonResponseDto(updatePokemon));
     }
 
-    @GetMapping("/pokemon")
-    public Page<PokemonResponseDto> search(@Valid SearchRecordDto searchRecordDto) {
-        Page<PokemonModel> pokemonModels = pokemonService.searchPokemon(searchRecordDto.search());
+    @GetMapping("/pokemon/{search}")
+    public ResponseEntity<Page<PokemonResponseDto>> search(
+            @PathVariable(value = "search") String search,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "numPokemon") String sort,
+            @RequestParam(defaultValue = "asc") String order,
+            Locale locale) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(order), sort));
+        Page<PokemonModel> pokemonModels = pokemonService.searchPokemon(search, pageable, locale);
 
-        return pokemonModels.map(this::mapToPokemonResponseDto);
+        return ResponseEntity.ok(pokemonModels.map(this::mapToPokemonResponseDto));
     }
 
     @DeleteMapping("/pokemon/{id}")
     public ResponseEntity<Object> deletePokemon(@PathVariable(value = "id") Long id, Locale locale) {
-        Optional<PokemonModel> pokemonOptional = pokemonService.findPokemonById(id);
+        Optional<PokemonModel> pokemonOptional = pokemonService.getOnePokemon(id);
         if (pokemonOptional.isEmpty()) {
             throw ResourceNotFoundException.withMessage(
                     messageSource, ERROR_POKEMON_ID_NOTFOUND,
@@ -90,5 +120,11 @@ public class PokemonController {
                 pokemonModel.getPrimaryType(),
                 pokemonModel.getSecondaryType()
         );
+    }
+
+    private List<PokemonResponseDto> mapToPokemonListResponseDto(List<PokemonModel> pokemonModels) {
+        return pokemonModels.stream()
+                .map(this::mapToPokemonResponseDto)
+                .collect(Collectors.toList());
     }
 }

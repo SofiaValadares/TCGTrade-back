@@ -1,7 +1,5 @@
 package br.com.arquitetura.spring.jpa.services;
 
-import br.com.arquitetura.spring.jpa.models.ProductModel;
-import br.com.arquitetura.spring.jpa.models.RoleModel;
 import br.com.arquitetura.spring.jpa.models.UserModel;
 import br.com.arquitetura.spring.jpa.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static br.com.arquitetura.spring.jpa.enums.RoleNameEnum.ROLE_USER;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;

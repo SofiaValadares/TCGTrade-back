@@ -2,7 +2,6 @@ package br.com.arquitetura.spring.jpa.proxies.services;
 
 import br.com.arquitetura.spring.jpa.dtos.PokemonResponseDto;
 import br.com.arquitetura.spring.jpa.enums.PokemonTypeEnum;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;

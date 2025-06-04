@@ -3,7 +3,6 @@ package br.com.arquitetura.spring.jpa.services;
 import br.com.arquitetura.spring.jpa.dtos.PokemonResponseDto;
 import br.com.arquitetura.spring.jpa.globals.exceptionhandler.ResourceNotFoundException;
 import br.com.arquitetura.spring.jpa.models.PokemonModel;
-import br.com.arquitetura.spring.jpa.proxies.controllers.PokeApiProxyController;
 import br.com.arquitetura.spring.jpa.proxies.services.PokeApiProxyService;
 import br.com.arquitetura.spring.jpa.repositories.PokemonRepository;
 import org.springframework.context.MessageSource;
@@ -12,6 +11,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 
 import java.util.*;
 
@@ -20,6 +21,7 @@ public class PokemonServiceImpl implements PokemonService {
     private final PokemonRepository pokemonRepository;
     private final PokeApiProxyService pokeApiProxyService;
     private final MessageSource messageSource;
+
 
     public PokemonServiceImpl(PokemonRepository pokemonRepository, PokeApiProxyService pokeApiProxyService, MessageSource messageSource) {
         this.pokemonRepository = pokemonRepository;
@@ -38,7 +40,7 @@ public class PokemonServiceImpl implements PokemonService {
     }
 
     @Override
-    public Page<PokemonModel> searchPokemon(String search) {
+    public Page<PokemonModel> searchPokemon(String search, Pageable pageable, Locale locale) {
         List<PokemonModel> pokemons = new ArrayList<>();
 
         pokemons.addAll(pokemonRepository.findPokemonModelByNameContainingIgnoreCase(search));
@@ -52,13 +54,11 @@ public class PokemonServiceImpl implements PokemonService {
         Set<PokemonModel> uniqueSet = new LinkedHashSet<>(pokemons);
         List<PokemonModel> finalList = new ArrayList<>(uniqueSet);
 
-        Pageable pageable = PageRequest.of(0, 10);
-
         if (!finalList.isEmpty()) {
             return new PageImpl<>(finalList, pageable, finalList.size());
         }
 
-        PokemonModel newPokemon = pokeApiUse(search);
+        PokemonModel newPokemon = pokeApiUse(search, locale);
 
         if (newPokemon != null) {
             return new PageImpl<>(List.of(newPokemon), pageable, 1);
@@ -71,25 +71,35 @@ public class PokemonServiceImpl implements PokemonService {
     @Override
     public void deletePokemon(Long idPokemon) { pokemonRepository.deleteById(idPokemon); }
 
-    @Override
-    public Optional<PokemonModel> getPokemonByName(String name) {
-        return pokemonRepository.getPokemonModelByName(name);
-    }
 
     @Override
-    public Optional<PokemonModel> getPokemonByNumPokemon(int numPokemon) {
-        return pokemonRepository.getPokemonModelByNumPokemon(numPokemon);
-    }
-
-    @Override
-    public Optional<PokemonModel> findPokemonById(Long id) {
+    public Optional<PokemonModel> getOnePokemon(Long id) {
         return pokemonRepository.findById(id);
     }
 
-    private PokemonModel pokeApiUse(String search) {
+    @Override
+    public List<PokemonModel> getAllPokemons() {
+        return pokemonRepository.findAll();
+    }
 
+    @Override
+    public Page<PokemonModel> getAllPagePokemons(Pageable pageable) {
+        return pokemonRepository.findAll(pageable);
+    }
+
+    private PokemonModel pokeApiUse(String search, Locale locale) {
         try {
-            PokemonResponseDto dto = pokeApiProxyService.getPokemon(search).block();
+            PokemonResponseDto dto = pokeApiProxyService.getPokemon(search)
+                    .onErrorResume(WebClientResponseException.NotFound.class, ex ->
+                            Mono.error(ResourceNotFoundException.withMessage(
+                                    messageSource,
+                                    "error.pokemon.search.notfound",
+                                    new Object[]{search},
+                                    locale
+                            ))
+                    )
+                    .block(); // uso controlado
+
 
             if (dto == null) {
                 return null;

@@ -1,7 +1,6 @@
 package br.com.arquitetura.spring.jpa.services;
 
 import br.com.arquitetura.spring.jpa.models.DomainModel;
-import br.com.arquitetura.spring.jpa.models.ProductModel;
 import br.com.arquitetura.spring.jpa.repositories.DomainRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
