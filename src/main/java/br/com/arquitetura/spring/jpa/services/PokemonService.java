@@ -1,8 +1,10 @@
 package br.com.arquitetura.spring.jpa.services;
 
+import br.com.arquitetura.spring.jpa.models.DomainModel;
 import br.com.arquitetura.spring.jpa.models.PokemonModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Locale;
@@ -15,5 +17,5 @@ public interface PokemonService {
     void deletePokemon(Long idPokemon);
     Optional<PokemonModel> getOnePokemon(Long id);
     List<PokemonModel> getAllPokemons();
-    Page<PokemonModel> getAllPagePokemons(Pageable pageable);
+    Page<PokemonModel> getAllPagePokemons(Specification<PokemonModel> spec, Pageable pageable);
 }

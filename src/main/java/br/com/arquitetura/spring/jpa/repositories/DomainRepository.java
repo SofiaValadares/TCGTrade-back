@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface DomainRepository extends JpaRepository<DomainModel, Long> {
 
-    public Page<DomainModel> findAll(Specification<DomainModel> spec, Pageable pageable);
+    Page<DomainModel> findAll(Specification<DomainModel> spec, Pageable pageable);
 
     Optional<DomainModel> findByName(String nomePesqusia);
 }

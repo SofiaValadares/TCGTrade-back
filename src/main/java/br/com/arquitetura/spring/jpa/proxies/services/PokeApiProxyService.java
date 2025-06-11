@@ -51,7 +51,7 @@ public class PokeApiProxyService {
                         secondaryType = PokemonTypeEnum.valueOf(type2Map.get("name").toString().toUpperCase());
                     }
 
-                    return new PokemonResponseDto(id, name, numPokemon, primaryType, secondaryType);
+                    return new PokemonResponseDto(id, name, numPokemon, primaryType, secondaryType, null, null, null, null);
                 });
     }
 

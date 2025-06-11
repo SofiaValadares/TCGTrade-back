@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
@@ -83,8 +84,8 @@ public class PokemonServiceImpl implements PokemonService {
     }
 
     @Override
-    public Page<PokemonModel> getAllPagePokemons(Pageable pageable) {
-        return pokemonRepository.findAll(pageable);
+    public Page<PokemonModel> getAllPagePokemons(Specification<PokemonModel> spec, Pageable pageable) {
+        return pokemonRepository.findAll(spec, pageable);
     }
 
     private PokemonModel pokeApiUse(String search, Locale locale) {
