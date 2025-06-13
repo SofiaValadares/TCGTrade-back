@@ -1,21 +1,23 @@
 package br.com.arquitetura.spring.jpa.services;
 
 import br.com.arquitetura.spring.jpa.dtos.PokemonResponseDto;
+import br.com.arquitetura.spring.jpa.globals.exceptionhandler.ResourceFoundException;
 import br.com.arquitetura.spring.jpa.globals.exceptionhandler.ResourceNotFoundException;
 import br.com.arquitetura.spring.jpa.models.PokemonModel;
 import br.com.arquitetura.spring.jpa.proxies.services.PokeApiProxyService;
 import br.com.arquitetura.spring.jpa.repositories.PokemonRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 @Service
 public class PokemonServiceImpl implements PokemonService {
@@ -31,51 +33,110 @@ public class PokemonServiceImpl implements PokemonService {
     }
 
     @Override
-    public PokemonModel savePokemon(PokemonModel pokemonModel) {
+    public PokemonModel savePokemon(PokemonModel pokemonModel, Locale locale) {
+        if (pokemonModel.getName() == null || pokemonModel.getName().isEmpty()) {
+            throw ResourceFoundException.withMessage(
+                    messageSource, "error.pokemon.name.mandatory",
+                    new Object[] {},
+                    locale
+            );
+        }
+
+        pokemonModel.setName(pokemonModel.getName().toUpperCase(locale));
+
+        if (pokemonModel.getNumPokemon() == null || pokemonModel.getNumPokemon() <= 0) {
+            throw ResourceFoundException.withMessage(
+                    messageSource, "error.pokemon.number.mandatory",
+                    new Object[] {},
+                    locale
+            );
+        } else {
+            Optional<PokemonModel> pokemonOptional = pokemonRepository.findByNumPokemon(pokemonModel.getNumPokemon());
+
+            if (pokemonOptional.isPresent()) {
+                throw ResourceFoundException.withMessage(
+                        messageSource, "error.pokemon.id.exists",
+                        new Object[] {pokemonModel.getNumPokemon()},
+                        locale
+                );
+            }
+        }
+
+        if (pokemonModel.getPrimaryType() == null) {
+            throw ResourceFoundException.withMessage(
+                    messageSource, "error.pokemon.primarytype.mandatory",
+                    new Object[] {},
+                    locale
+            );
+        } else if (pokemonModel.getSecondaryType() != null || pokemonModel.getSecondaryType() == pokemonModel.getPrimaryType()) {
+            throw ResourceFoundException.withMessage(
+                    messageSource, "error.pokemon.types.equals",
+                    new Object[] {},
+                    locale
+            );
+        }
+
         return pokemonRepository.save(pokemonModel);
     }
 
     @Override
-    public PokemonModel updatePokemon(PokemonModel pokemon) {
+    public PokemonModel updatePokemon(PokemonModel pokemon, Locale locale) {
+        if (pokemon.getName() == null || pokemon.getName().isEmpty()) {
+            throw ResourceFoundException.withMessage(
+                    messageSource, "error.pokemon.name.mandatory",
+                    new Object[] {},
+                    locale
+            );
+        }
+
+        pokemon.setName(pokemon.getName().toUpperCase(locale));
+
+        if (pokemon.getNumPokemon() == null || pokemon.getNumPokemon() <= 0) {
+            throw ResourceFoundException.withMessage(
+                    messageSource, "error.pokemon.number.mandatory",
+                    new Object[] {},
+                    locale
+            );
+        }
+
+        if (pokemon.getPrimaryType() == null) {
+            throw ResourceFoundException.withMessage(
+                    messageSource, "error.pokemon.primarytype.mandatory",
+                    new Object[] {},
+                    locale
+            );
+        } else if (pokemon.getSecondaryType() != null || pokemon.getSecondaryType() == pokemon.getPrimaryType()) {
+            throw ResourceFoundException.withMessage(
+                    messageSource, "error.pokemon.types.equals",
+                    new Object[] {},
+                    locale
+            );
+        }
+
         return pokemonRepository.save(pokemon);
     }
 
+
     @Override
-    public Page<PokemonModel> searchPokemon(String search, Pageable pageable, Locale locale) {
-        List<PokemonModel> pokemons = new ArrayList<>();
+    public void deletePokemon(Long idPokemon, Locale locale) {
+        PokemonModel pokemonModel = this.getOnePokemon(idPokemon, locale);
 
-        pokemons.addAll(pokemonRepository.findPokemonModelByNameContainingIgnoreCase(search));
-
-        try {
-            Integer numPokemon = Integer.parseInt(search);
-            pokemons.addAll(pokemonRepository.findByNumPokemon(numPokemon));
-        } catch (NumberFormatException e) {}
-
-
-        Set<PokemonModel> uniqueSet = new LinkedHashSet<>(pokemons);
-        List<PokemonModel> finalList = new ArrayList<>(uniqueSet);
-
-        if (!finalList.isEmpty()) {
-            return new PageImpl<>(finalList, pageable, finalList.size());
-        }
-
-        PokemonModel newPokemon = pokeApiUse(search, locale);
-
-        if (newPokemon != null) {
-            return new PageImpl<>(List.of(newPokemon), pageable, 1);
-        }
-
-        return Page.empty(pageable);
+        pokemonRepository.deleteById(pokemonModel.getIdPokemon());
     }
 
 
     @Override
-    public void deletePokemon(Long idPokemon) { pokemonRepository.deleteById(idPokemon); }
+    public PokemonModel getOnePokemon(Long id, Locale locale) {
+        Optional<PokemonModel> pokemonOptional = pokemonRepository.findById(id);
+        if (pokemonOptional.isEmpty()) {
+            throw ResourceNotFoundException.withMessage(
+                    messageSource, "error.pokemon.id.notfound",
+                    new Object[]{id},
+                    locale
+            );
+        }
 
-
-    @Override
-    public Optional<PokemonModel> getOnePokemon(Long id) {
-        return pokemonRepository.findById(id);
+        return pokemonOptional.get();
     }
 
     @Override

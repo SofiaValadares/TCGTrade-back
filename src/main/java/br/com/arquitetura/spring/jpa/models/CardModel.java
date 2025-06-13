@@ -1,7 +1,6 @@
 package br.com.arquitetura.spring.jpa.models;
 
 import jakarta.persistence.*;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 
@@ -13,13 +12,16 @@ public class CardModel extends AuditModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idCard;
-    
+
     @Column(nullable = false)
     private String nameCard;
     @Column(nullable = false)
     private Long collection;
     @Column(nullable = false)
     private Integer numberCard;
+    @ManyToOne()
+    @JoinColumn(name = "idPokemon", nullable = false)
+    private PokemonModel pokemonModel;
 
 
     public Integer getNumberCard() {
@@ -52,5 +54,13 @@ public class CardModel extends AuditModel implements Serializable {
 
     public void setIdCard(Long idCard) {
         this.idCard = idCard;
+    }
+
+    public PokemonModel getPokemonModel() {
+        return pokemonModel;
+    }
+
+    public void setPokemonModel(PokemonModel pokemonModel) {
+        this.pokemonModel = pokemonModel;
     }
 }

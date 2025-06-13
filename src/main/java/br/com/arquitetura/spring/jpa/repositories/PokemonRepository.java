@@ -14,8 +14,5 @@ import java.util.Optional;
 @Repository
 public interface PokemonRepository extends JpaRepository<PokemonModel, Long> {
     Page<PokemonModel> findAll(Specification<PokemonModel> spec, Pageable pageable);
-    List<PokemonModel> findPokemonModelByNameContainingIgnoreCase(String name);
-    List<PokemonModel> findByNumPokemon(Integer numPokemon);
-    Optional<PokemonModel> getPokemonModelByName(String name);
-    Optional<PokemonModel> getPokemonModelByNumPokemon(Integer numPokemon);
+    Optional<PokemonModel> findByNumPokemon(Integer numPokemon);
 }

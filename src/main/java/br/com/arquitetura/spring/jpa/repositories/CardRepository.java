@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface CardRepository extends JpaRepository<CardModel, Long> {
-    List<CardModel> findCardModelByNameCardContainsIgnoreCase(String name);
-    List<CardModel> findCardModelByCollection(Long collection);
+    List<CardModel> findByPokemonModel_IdPokemon(Long id);
+
     Optional<CardModel> findCardModelByCollectionAndNumberCard(Long collection, Integer numberCard);
 }

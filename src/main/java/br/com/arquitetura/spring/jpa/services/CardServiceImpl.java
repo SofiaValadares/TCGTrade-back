@@ -2,8 +2,12 @@ package br.com.arquitetura.spring.jpa.services;
 
 import br.com.arquitetura.spring.jpa.globals.exceptionhandler.ResourceFoundException;
 import br.com.arquitetura.spring.jpa.models.CardModel;
+import br.com.arquitetura.spring.jpa.models.PokemonModel;
 import br.com.arquitetura.spring.jpa.repositories.CardRepository;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Locale;
@@ -45,13 +49,19 @@ public class CardServiceImpl implements CardService{
     }
 
     @Override
-    public Optional<CardModel> findCardById(Long id) {
-        return cardRepository.findById(id);
+    public Page<CardModel> getAllPageCards(Specification<CardModel> spec, Pageable pageable) {
+        return null;
     }
 
     @Override
-    public Optional<CardModel> findCardByNumberAndCollection(Integer number, Long collection) {
-        return cardRepository.findCardModelByCollectionAndNumberCard(collection, number);
+    public Optional<CardModel> getOneCard(Long id) {
+        return cardRepository.findById(id);
+    }
+
+
+    @Override
+    public List<CardModel> findByPokemonModelIdPokemon(Long idPokemon) {
+        return cardRepository.findByPokemonModel_IdPokemon(idPokemon);
     }
 
     @Override
@@ -59,13 +69,6 @@ public class CardServiceImpl implements CardService{
         return cardRepository.findAll();
     }
 
-    @Override
-    public List<CardModel> findCardsByName(String name) {
-        return cardRepository.findCardModelByNameCardContainsIgnoreCase(name);
-    }
 
-    @Override
-    public List<CardModel> findCardsByCollection(Long collection) {
-        return cardRepository.findCardModelByCollection(collection);
-    }
+
 }

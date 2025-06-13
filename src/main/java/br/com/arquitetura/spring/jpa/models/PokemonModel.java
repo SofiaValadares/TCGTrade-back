@@ -28,6 +28,9 @@ public class PokemonModel extends AuditModel implements Serializable {
     @Enumerated(EnumType.STRING)
     private PokemonTypeEnum secondaryType;
 
+    @OneToMany(mappedBy = "pokemonModel", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CardModel> cardModels;
+
     public Long getIdPokemon() {
         return idPokemon;
     }
@@ -60,6 +63,14 @@ public class PokemonModel extends AuditModel implements Serializable {
 
     public void setSecondaryType(PokemonTypeEnum secondaryType) { this.secondaryType = secondaryType; }
 
+    public List<CardModel> getCardModels() {
+        return cardModels;
+    }
+
+    public void setCardModels(List<CardModel> cardModels) {
+        this.cardModels = cardModels;
+    }
+
     public PokemonModel() {}
 
     public PokemonModel(Long idPokemon, Integer numPokemon, String name, PokemonTypeEnum primaryType, PokemonTypeEnum secondaryType) {
@@ -69,4 +80,6 @@ public class PokemonModel extends AuditModel implements Serializable {
         this.primaryType = primaryType;
         this.secondaryType = secondaryType;
     }
+
+
 }

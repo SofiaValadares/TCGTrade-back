@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 public record CardRecordDto(
         @NotBlank String nameCard,
         @NotNull Long collection,
-        @NotNull Integer numberCard
+        @NotNull Integer numberCard,
+        @NotNull Long idPokemon
 ) {
 }

@@ -2,6 +2,7 @@ package br.com.arquitetura.spring.jpa.dtos;
 
 import br.com.arquitetura.spring.jpa.enums.PokemonTypeEnum;
 import br.com.arquitetura.spring.jpa.models.AuditModel;
+import br.com.arquitetura.spring.jpa.models.PokemonModel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
