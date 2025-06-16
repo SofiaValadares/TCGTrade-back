@@ -51,13 +51,14 @@ public class PokemonController {
     public ResponseEntity<Page<PokemonResponseDto>> getAllPokemonPage(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "numPokemon") String sort,
+            @RequestParam(defaultValue = "number") String sort,
             @RequestParam(defaultValue = "asc") String order,
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) Integer number
+            @RequestParam(required = false) Integer number,
+            @RequestParam(required = false) Integer generation
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(order), sort));
-        Specification<PokemonModel> spec = Specification.where(nameContains(name)).and(numberEquals(number));
+        Specification<PokemonModel> spec = Specification.where(nameContains(name)).and(numberEquals(number).and(generationEquals(generation)));
         Page<PokemonModel> pokemonModels = pokemonService.getAllPagePokemons(spec, pageable);
 
         return ResponseEntity.ok(pokemonModels.map(this::mapToPokemonResponseDto));
@@ -104,7 +105,14 @@ public class PokemonController {
     Specification<PokemonModel> numberEquals(Integer number) {
         return (root, query, criteriaBuilder) -> {
             if (number == null) return null;
-            return criteriaBuilder.equal(root.get("numPokemon"), number);
+            return criteriaBuilder.equal(root.get("number"), number);
+        };
+    }
+
+    Specification<PokemonModel> generationEquals(Integer generation) {
+        return (root, query, criteriaBuilder) -> {
+            if (generation == null) return null;
+            return criteriaBuilder.equal(root.get("generation"), generation);
         };
     }
 
@@ -112,9 +120,11 @@ public class PokemonController {
         return new PokemonResponseDto(
                 pokemonModel.getIdPokemon(),
                 pokemonModel.getName(),
-                pokemonModel.getNumPokemon(),
+                pokemonModel.getNumber(),
+                pokemonModel.getGeneration(),
                 pokemonModel.getPrimaryType(),
                 pokemonModel.getSecondaryType(),
+                pokemonModel.getImageUrl(),
                 pokemonModel.getDateRegistered(),
                 pokemonModel.getUserRegistered(),
                 pokemonModel.getDateChanged(),
@@ -135,9 +145,11 @@ public class PokemonController {
         return new PokemonListResponseDto(
                 pokemonModel.getIdPokemon(),
                 pokemonModel.getName(),
-                pokemonModel.getNumPokemon(),
+                pokemonModel.getNumber(),
+                pokemonModel.getGeneration(),
                 pokemonModel.getPrimaryType(),
                 pokemonModel.getSecondaryType(),
+                pokemonModel.getImageUrl(),
                 cards
         );
     }

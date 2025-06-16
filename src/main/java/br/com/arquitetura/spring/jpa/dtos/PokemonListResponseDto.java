@@ -7,9 +7,11 @@ import java.util.List;
 public record PokemonListResponseDto(
         Long idPokemon,
         String name,
-        Integer numPokemon,
+        Integer number,
+        Integer generation,
         PokemonTypeEnum primaryType,
         PokemonTypeEnum secondaryType,
+        String imageUrl,
         List<CardListResponseDto> cards
 ) {
 }

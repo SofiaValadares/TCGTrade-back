@@ -1,14 +1,8 @@
 package br.com.arquitetura.spring.jpa.globals;
 
 import br.com.arquitetura.spring.jpa.enums.RoleNameEnum;
-import br.com.arquitetura.spring.jpa.models.DomainItemsModel;
-import br.com.arquitetura.spring.jpa.models.DomainModel;
-import br.com.arquitetura.spring.jpa.models.RoleModel;
-import br.com.arquitetura.spring.jpa.models.UserModel;
-import br.com.arquitetura.spring.jpa.repositories.DomainItemsRepository;
-import br.com.arquitetura.spring.jpa.repositories.DomainRepository;
-import br.com.arquitetura.spring.jpa.repositories.RoleRepository;
-import br.com.arquitetura.spring.jpa.repositories.UserRepository;
+import br.com.arquitetura.spring.jpa.models.*;
+import br.com.arquitetura.spring.jpa.repositories.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +25,8 @@ public class DataInitializer {
     @Bean
     public CommandLineRunner init(UserRepository userRepository, RoleRepository roleRepository,
                                   DomainRepository domainRepository,
-                                  DomainItemsRepository domainItemsRepository) {
+                                  DomainItemsRepository domainItemsRepository,
+                                  GenerationRepository generationRepository) {
         return args -> {
             // Criar as roles
             RoleModel roleAdmin = createRoleIfNotFound("ROLE_ADMIN", roleRepository);
@@ -200,6 +195,28 @@ public class DataInitializer {
                     domainItemsRepository.save(domainItem);
                 }
             }
+
+            List<GenerationModel> generations = Arrays.asList(
+                    new GenerationModel(null, 1, "Kanto"),
+                    new GenerationModel(null, 2, "Johto"),
+                    new GenerationModel(null, 3, "Hoenn"),
+                    new GenerationModel(null, 4, "Sinnoh"),
+                    new GenerationModel(null, 5, "Unova"),
+                    new GenerationModel(null, 6, "Kalos"),
+                    new GenerationModel(null, 7, "Alola"),
+                    new GenerationModel(null, 8, "Galar"),
+                    new GenerationModel(null, 9, "Paldea")
+            );
+
+            for (GenerationModel gen : generations) {
+                if (generationRepository.findByNumber(gen.getNumber()).isEmpty()) {
+                    gen.setUserRegistered(ROLE_ADMIN);
+                    gen.setDateRegistered(LocalDateTime.now());
+
+                    generationRepository.save(gen);
+                }
+            }
+
         };
     }
 

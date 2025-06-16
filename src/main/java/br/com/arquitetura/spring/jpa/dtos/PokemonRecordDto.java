@@ -10,10 +10,12 @@ import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
 public record PokemonRecordDto(
-        @NotNull Integer numPokemon,
+        @NotNull Integer number,
         @NotBlank String name,
+        @NotNull Integer generation,
         @NotNull PokemonTypeEnum primaryType,
-        PokemonTypeEnum secondaryType
+        PokemonTypeEnum secondaryType,
+        String imageUrl
 
 ) {
 }

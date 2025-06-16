@@ -16,10 +16,13 @@ public class PokemonModel extends AuditModel implements Serializable {
     private Long idPokemon;
 
     @Column(nullable = false, unique = true)
-    private Integer numPokemon;
+    private Integer number;
 
     @Column(nullable = false)
     private String name;
+    
+    @Column(nullable = false)
+    private Integer generation;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -27,6 +30,8 @@ public class PokemonModel extends AuditModel implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private PokemonTypeEnum secondaryType;
+
+    private String imageUrl;
 
     @OneToMany(mappedBy = "pokemonModel", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CardModel> cardModels;
@@ -39,12 +44,12 @@ public class PokemonModel extends AuditModel implements Serializable {
         this.idPokemon = idPokemon;
     }
 
-    public Integer getNumPokemon() {
-        return numPokemon;
+    public Integer getNumber() {
+        return number;
     }
 
-    public void setNumPokemon(Integer numPokemon) {
-        this.numPokemon = numPokemon;
+    public void setNumber(Integer number) {
+        this.number = number;
     }
 
     public String getName() {
@@ -53,6 +58,22 @@ public class PokemonModel extends AuditModel implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getGeneration() {
+        return generation;
+    }
+
+    public void setGeneration(Integer generation) {
+        this.generation = generation;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public PokemonTypeEnum getPrimaryType() { return primaryType; }
@@ -73,12 +94,14 @@ public class PokemonModel extends AuditModel implements Serializable {
 
     public PokemonModel() {}
 
-    public PokemonModel(Long idPokemon, Integer numPokemon, String name, PokemonTypeEnum primaryType, PokemonTypeEnum secondaryType) {
+    public PokemonModel(Long idPokemon, Integer number, String name, Integer generation, PokemonTypeEnum primaryType, PokemonTypeEnum secondaryType, String imageUrl) {
         this.idPokemon = idPokemon;
-        this.numPokemon = numPokemon;
+        this.number = number;
         this.name = name;
+        this.generation = generation;
         this.primaryType = primaryType;
         this.secondaryType = secondaryType;
+        this.imageUrl = imageUrl;
     }
 
 

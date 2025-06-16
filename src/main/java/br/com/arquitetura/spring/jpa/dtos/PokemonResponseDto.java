@@ -7,9 +7,11 @@ import java.time.LocalDateTime;
 public record PokemonResponseDto(
         Long idPokemon,
         String name,
-        Integer numPokemon,
+        Integer number,
+        Integer generation,
         PokemonTypeEnum primaryType,
         PokemonTypeEnum secondaryType,
+        String imageUrl,
         LocalDateTime dateRegistered,
         String userRegistered,
         LocalDateTime dateChanged,

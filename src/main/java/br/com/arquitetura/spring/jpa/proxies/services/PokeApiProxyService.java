@@ -36,7 +36,9 @@ public class PokeApiProxyService {
                     Map<String, Object> speciesMap = (Map<String, Object>) map.get("species");
                     String name = speciesMap.get("name").toString();
 
-                    Integer numPokemon = Integer.valueOf(map.get("id").toString());
+                    Integer number = Integer.valueOf(map.get("id").toString());
+
+                    Integer generation = 0;
 
                     var typesList = (java.util.List<Map<String, Object>>) map.get("types");
 
@@ -51,7 +53,7 @@ public class PokeApiProxyService {
                         secondaryType = PokemonTypeEnum.valueOf(type2Map.get("name").toString().toUpperCase());
                     }
 
-                    return new PokemonResponseDto(id, name, numPokemon, primaryType, secondaryType, null, null, null, null);
+                    return new PokemonResponseDto(id, name, number, generation, primaryType, secondaryType, null,null, null, null, null);
                 });
     }
 

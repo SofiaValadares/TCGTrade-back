@@ -44,23 +44,25 @@ public class PokemonServiceImpl implements PokemonService {
 
         pokemonModel.setName(pokemonModel.getName().toUpperCase(locale));
 
-        if (pokemonModel.getNumPokemon() == null || pokemonModel.getNumPokemon() <= 0) {
+        if (pokemonModel.getNumber() == null || pokemonModel.getNumber() <= 0) {
             throw ResourceFoundException.withMessage(
                     messageSource, "error.pokemon.number.mandatory",
                     new Object[] {},
                     locale
             );
         } else {
-            Optional<PokemonModel> pokemonOptional = pokemonRepository.findByNumPokemon(pokemonModel.getNumPokemon());
+            Optional<PokemonModel> pokemonOptional = pokemonRepository.findBynumber(pokemonModel.getNumber());
 
             if (pokemonOptional.isPresent()) {
                 throw ResourceFoundException.withMessage(
                         messageSource, "error.pokemon.id.exists",
-                        new Object[] {pokemonModel.getNumPokemon()},
+                        new Object[] {pokemonModel.getNumber()},
                         locale
                 );
             }
         }
+
+        // TO-DO: erro de geraçao vazia
 
         if (pokemonModel.getPrimaryType() == null) {
             throw ResourceFoundException.withMessage(
@@ -68,7 +70,7 @@ public class PokemonServiceImpl implements PokemonService {
                     new Object[] {},
                     locale
             );
-        } else if (pokemonModel.getSecondaryType() != null || pokemonModel.getSecondaryType() == pokemonModel.getPrimaryType()) {
+        } else if (pokemonModel.getSecondaryType() != null && pokemonModel.getSecondaryType() == pokemonModel.getPrimaryType()) {
             throw ResourceFoundException.withMessage(
                     messageSource, "error.pokemon.types.equals",
                     new Object[] {},
@@ -91,7 +93,7 @@ public class PokemonServiceImpl implements PokemonService {
 
         pokemon.setName(pokemon.getName().toUpperCase(locale));
 
-        if (pokemon.getNumPokemon() == null || pokemon.getNumPokemon() <= 0) {
+        if (pokemon.getNumber() == null || pokemon.getNumber() <= 0) {
             throw ResourceFoundException.withMessage(
                     messageSource, "error.pokemon.number.mandatory",
                     new Object[] {},
@@ -99,13 +101,15 @@ public class PokemonServiceImpl implements PokemonService {
             );
         }
 
+        // TO-DO: erro de geracao vazia ou negativa
+
         if (pokemon.getPrimaryType() == null) {
             throw ResourceFoundException.withMessage(
                     messageSource, "error.pokemon.primarytype.mandatory",
                     new Object[] {},
                     locale
             );
-        } else if (pokemon.getSecondaryType() != null || pokemon.getSecondaryType() == pokemon.getPrimaryType()) {
+        } else if (pokemon.getSecondaryType() != null && pokemon.getSecondaryType() == pokemon.getPrimaryType()) {
             throw ResourceFoundException.withMessage(
                     messageSource, "error.pokemon.types.equals",
                     new Object[] {},
@@ -169,9 +173,11 @@ public class PokemonServiceImpl implements PokemonService {
 
             PokemonModel pokemon = new PokemonModel();
             pokemon.setName(dto.name());
-            pokemon.setNumPokemon(dto.numPokemon());
+            pokemon.setNumber(dto.number());
+            pokemon.setGeneration(dto.generation());
             pokemon.setPrimaryType(dto.primaryType());
             pokemon.setSecondaryType(dto.secondaryType());
+            pokemon.setImageUrl(dto.imageUrl());
 
             return pokemonRepository.save(pokemon);
         } catch (ResourceNotFoundException e) {
