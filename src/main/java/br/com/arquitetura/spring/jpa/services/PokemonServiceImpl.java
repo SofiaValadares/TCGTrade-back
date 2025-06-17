@@ -51,7 +51,7 @@ public class PokemonServiceImpl implements PokemonService {
                     locale
             );
         } else {
-            Optional<PokemonModel> pokemonOptional = pokemonRepository.findBynumber(pokemonModel.getNumber());
+            Optional<PokemonModel> pokemonOptional = pokemonRepository.findByNumber(pokemonModel.getNumber());
 
             if (pokemonOptional.isPresent()) {
                 throw ResourceFoundException.withMessage(
@@ -145,7 +145,7 @@ public class PokemonServiceImpl implements PokemonService {
 
     @Override
     public List<PokemonModel> getAllPokemons() {
-        return pokemonRepository.findAll();
+        return pokemonRepository.findAllByOrderByNumberAsc();
     }
 
     @Override
@@ -153,36 +153,4 @@ public class PokemonServiceImpl implements PokemonService {
         return pokemonRepository.findAll(spec, pageable);
     }
 
-    private PokemonModel pokeApiUse(String search, Locale locale) {
-        try {
-            PokemonResponseDto dto = pokeApiProxyService.getPokemon(search)
-                    .onErrorResume(WebClientResponseException.NotFound.class, ex ->
-                            Mono.error(ResourceNotFoundException.withMessage(
-                                    messageSource,
-                                    "error.pokemon.search.notfound",
-                                    new Object[]{search},
-                                    locale
-                            ))
-                    )
-                    .block(); // uso controlado
-
-
-            if (dto == null) {
-                return null;
-            }
-
-            PokemonModel pokemon = new PokemonModel();
-            pokemon.setName(dto.name());
-            pokemon.setNumber(dto.number());
-            pokemon.setGeneration(dto.generation());
-            pokemon.setPrimaryType(dto.primaryType());
-            pokemon.setSecondaryType(dto.secondaryType());
-            pokemon.setImageUrl(dto.imageUrl());
-
-            return pokemonRepository.save(pokemon);
-        } catch (ResourceNotFoundException e) {
-            return null;
-        }
-
-    }
 }

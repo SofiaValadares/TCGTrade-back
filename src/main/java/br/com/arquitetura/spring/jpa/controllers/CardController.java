@@ -42,9 +42,7 @@ public class CardController {
 
     @GetMapping("/cards")
     public ResponseEntity<List<CardResponseDto>> getAllCards(@RequestParam(required = false) Long idPokemon, Locale locale) {
-        List<CardModel> cardsList = cardService.getAllCards();
-
-        if (idPokemon != null) {
+        if (idPokemon == null) {
             throw ResourceNotFoundException.withMessage(
                     messageSource, "error.pokemon.id.mandatory",
                     new Object[]{idPokemon},
@@ -52,7 +50,7 @@ public class CardController {
             );
         } else {
             PokemonModel pokemonModel = pokemonService.getOnePokemon(idPokemon, locale);
-            List<CardModel> cardList = cardService.findByPokemonModelIdPokemon(idPokemon);
+            List<CardModel> cardList = cardService.findByPokemonModelIdPokemon(pokemonModel.getIdPokemon());
             List<CardResponseDto> responseList = cardList.stream()
                     .map(this::mapToCardResponseDto)
                     .toList();
@@ -144,19 +142,13 @@ public class CardController {
             @RequestParam(required = false) Integer numberCard,
             Locale locale
     ) {
-        if (idPokemon != null) {
-            throw ResourceNotFoundException.withMessage(
-                    messageSource, "error.pokemon.id.mandatory",
-                    new Object[]{idPokemon},
-                    locale
-            );
-        } else {
-            Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(order), sort));
-            Specification<CardModel> spec = Specification.where(idPokemonEquals(idPokemon).and(idCardEquals(idCard)).and(nameContains(nameCard)).and(collectionEquals(collection)).and(numberEquals(numberCard)));
-            Page<CardModel> cardPage = cardService.getAllPageCards(spec, pageable);
 
-            return cardPage.map(this::mapToCardResponseDto);
-        }
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(order), sort));
+        Specification<CardModel> spec = Specification.where(idPokemonEquals(idPokemon).and(idCardEquals(idCard)).and(nameContains(nameCard)).and(collectionEquals(collection)).and(numberEquals(numberCard)));
+        Page<CardModel> cardPage = cardService.getAllPageCards(spec, pageable);
+
+        return cardPage.map(this::mapToCardResponseDto);
+
     }
 
     Specification<CardModel> idPokemonEquals(Long idPokemon) {

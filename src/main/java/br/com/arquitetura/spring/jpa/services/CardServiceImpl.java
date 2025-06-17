@@ -50,7 +50,7 @@ public class CardServiceImpl implements CardService{
 
     @Override
     public Page<CardModel> getAllPageCards(Specification<CardModel> spec, Pageable pageable) {
-        return null;
+        return cardRepository.findAll(spec, pageable);
     }
 
     @Override

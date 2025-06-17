@@ -3,6 +3,7 @@ package br.com.arquitetura.spring.jpa.models;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "TB_GENERATION")
@@ -18,6 +19,9 @@ public class GenerationModel extends AuditModel implements Serializable {
 
     @Column(nullable = false)
     private String region;
+
+    @OneToMany(mappedBy = "generation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PokemonModel> pokemonModels;
 
     public GenerationModel() {
     }
@@ -50,5 +54,13 @@ public class GenerationModel extends AuditModel implements Serializable {
 
     public void setRegion(String region) {
         this.region = region;
+    }
+
+    public List<PokemonModel> getPokemonModels() {
+        return pokemonModels;
+    }
+
+    public void setPokemonModels(List<PokemonModel> pokemonModels) {
+        this.pokemonModels = pokemonModels;
     }
 }

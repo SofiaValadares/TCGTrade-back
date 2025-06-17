@@ -5,7 +5,9 @@ import br.com.arquitetura.spring.jpa.dtos.PokemonListResponseDto;
 import br.com.arquitetura.spring.jpa.dtos.PokemonRecordDto;
 import br.com.arquitetura.spring.jpa.dtos.PokemonResponseDto;
 import br.com.arquitetura.spring.jpa.globals.exceptionhandler.ResourceNotFoundException;
+import br.com.arquitetura.spring.jpa.models.GenerationModel;
 import br.com.arquitetura.spring.jpa.models.PokemonModel;
+import br.com.arquitetura.spring.jpa.services.GenerationService;
 import br.com.arquitetura.spring.jpa.services.PokemonService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
@@ -25,9 +27,11 @@ import java.util.*;
 @RequestMapping("/api")
 public class PokemonController {
     private final PokemonService pokemonService;
+    private final GenerationService generationService;
 
-    public PokemonController(PokemonService pokemonService) {
+    public PokemonController(PokemonService pokemonService, GenerationService generationService) {
         this.pokemonService = pokemonService;
+        this.generationService = generationService;
     }
 
     @GetMapping("/pokemon")
@@ -68,6 +72,10 @@ public class PokemonController {
     public ResponseEntity<PokemonResponseDto> savePokemon(@RequestBody @Valid PokemonRecordDto pokemonRecordDto, Locale locale) {
         var pokemonModel = new PokemonModel();
         BeanUtils.copyProperties(pokemonRecordDto, pokemonModel);
+
+        GenerationModel generationModel = generationService.getOneGenerationByNumber(pokemonRecordDto.generation(), locale);
+
+        pokemonModel.setGeneration(generationModel);
         PokemonModel savePokemon = pokemonService.savePokemon(pokemonModel, locale);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(mapToPokemonResponseDto(savePokemon));
@@ -80,6 +88,10 @@ public class PokemonController {
             Locale locale) {
         PokemonModel pokemonModel = pokemonService.getOnePokemon(id, locale);
         BeanUtils.copyProperties(pokemonRecordDto, pokemonModel);
+
+        GenerationModel generationModel = generationService.getOneGenerationByNumber(pokemonRecordDto.generation(), locale);
+
+        pokemonModel.setGeneration(generationModel);
         PokemonModel updatePokemon = pokemonService.updatePokemon(pokemonModel, locale);
 
         return ResponseEntity.status(HttpStatus.OK).body(mapToPokemonResponseDto(updatePokemon));
@@ -121,7 +133,7 @@ public class PokemonController {
                 pokemonModel.getIdPokemon(),
                 pokemonModel.getName(),
                 pokemonModel.getNumber(),
-                pokemonModel.getGeneration(),
+                pokemonModel.getGeneration().getNumber(),
                 pokemonModel.getPrimaryType(),
                 pokemonModel.getSecondaryType(),
                 pokemonModel.getImageUrl(),
@@ -146,7 +158,7 @@ public class PokemonController {
                 pokemonModel.getIdPokemon(),
                 pokemonModel.getName(),
                 pokemonModel.getNumber(),
-                pokemonModel.getGeneration(),
+                pokemonModel.getGeneration().getNumber(),
                 pokemonModel.getPrimaryType(),
                 pokemonModel.getSecondaryType(),
                 pokemonModel.getImageUrl(),

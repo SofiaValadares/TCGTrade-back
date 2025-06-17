@@ -1,5 +1,6 @@
 package br.com.arquitetura.spring.jpa.globals;
 
+import br.com.arquitetura.spring.jpa.enums.PokemonTypeEnum;
 import br.com.arquitetura.spring.jpa.enums.RoleNameEnum;
 import br.com.arquitetura.spring.jpa.models.*;
 import br.com.arquitetura.spring.jpa.repositories.*;
@@ -26,6 +27,7 @@ public class DataInitializer {
     public CommandLineRunner init(UserRepository userRepository, RoleRepository roleRepository,
                                   DomainRepository domainRepository,
                                   DomainItemsRepository domainItemsRepository,
+                                  PokemonRepository pokemonRepository,
                                   GenerationRepository generationRepository) {
         return args -> {
             // Criar as roles
@@ -212,10 +214,147 @@ public class DataInitializer {
                 if (generationRepository.findByNumber(gen.getNumber()).isEmpty()) {
                     gen.setUserRegistered(ROLE_ADMIN);
                     gen.setDateRegistered(LocalDateTime.now());
-
                     generationRepository.save(gen);
                 }
             }
+
+            for (int i = 1; i <= 9; i++) {
+                Optional<GenerationModel> genOptional = generationRepository.findByNumber(i);
+
+                if (genOptional.isPresent()) {
+                    GenerationModel gen = genOptional.get();
+
+                    List<PokemonModel> pokemons = switch (i) {
+                        case 1 -> List.of(
+                                new PokemonModel(1, "Bulbasaur", gen, PokemonTypeEnum.GRASS, PokemonTypeEnum.POISON, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"),
+                                new PokemonModel(2, "Ivysaur", gen, PokemonTypeEnum.GRASS, PokemonTypeEnum.POISON, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"),
+                                new PokemonModel(3, "Venusaur", gen, PokemonTypeEnum.GRASS, PokemonTypeEnum.POISON, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"),
+                                new PokemonModel(4, "Charmander", gen, PokemonTypeEnum.FIRE, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png"),
+                                new PokemonModel(5, "Charmeleon", gen, PokemonTypeEnum.FIRE, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"),
+                                new PokemonModel(6, "Charizard", gen, PokemonTypeEnum.FIRE, PokemonTypeEnum.FLYING, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"),
+                                new PokemonModel(7, "Squirtle", gen, PokemonTypeEnum.WATER, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"),
+                                new PokemonModel(8, "Wartortle", gen, PokemonTypeEnum.WATER, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/8.png"),
+                                new PokemonModel(9, "Blastoise", gen, PokemonTypeEnum.WATER, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png"),
+                                new PokemonModel(10, "Caterpie", gen, PokemonTypeEnum.BUG, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png")
+                        );
+                        case 2 -> List.of(
+                                new PokemonModel(152, "Chikorita", gen, PokemonTypeEnum.GRASS, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/152.png"),
+                                new PokemonModel(153, "Bayleef", gen, PokemonTypeEnum.GRASS, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/153.png"),
+                                new PokemonModel(154, "Meganium", gen, PokemonTypeEnum.GRASS, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"),
+                                new PokemonModel(155, "Cyndaquil", gen, PokemonTypeEnum.FIRE, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/155.png"),
+                                new PokemonModel(156, "Quilava", gen, PokemonTypeEnum.FIRE, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/156.png"),
+                                new PokemonModel(157, "Typhlosion", gen, PokemonTypeEnum.FIRE, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/157.png"),
+                                new PokemonModel(158, "Totodile", gen, PokemonTypeEnum.WATER, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/158.png"),
+                                new PokemonModel(159, "Croconaw", gen, PokemonTypeEnum.WATER, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/159.png"),
+                                new PokemonModel(160, "Feraligatr", gen, PokemonTypeEnum.WATER, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/160.png"),
+                                new PokemonModel(161, "Sentret", gen, PokemonTypeEnum.NORMAL, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png")
+                        );
+                        case 3 -> List.of(
+                                new PokemonModel(252, "Treecko", gen, PokemonTypeEnum.GRASS, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/252.png"),
+                                new PokemonModel(253, "Grovyle", gen, PokemonTypeEnum.GRASS, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/253.png"),
+                                new PokemonModel(254, "Sceptile", gen, PokemonTypeEnum.GRASS, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/254.png"),
+                                new PokemonModel(255, "Torchic", gen, PokemonTypeEnum.FIRE, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/255.png"),
+                                new PokemonModel(256, "Combusken", gen, PokemonTypeEnum.FIRE, PokemonTypeEnum.FIGHTING, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/256.png"),
+                                new PokemonModel(257, "Blaziken", gen, PokemonTypeEnum.FIRE, PokemonTypeEnum.FIGHTING, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/257.png"),
+                                new PokemonModel(258, "Mudkip", gen, PokemonTypeEnum.WATER, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/258.png"),
+                                new PokemonModel(259, "Marshtomp", gen, PokemonTypeEnum.WATER, PokemonTypeEnum.GROUND, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/259.png"),
+                                new PokemonModel(260, "Swampert", gen, PokemonTypeEnum.WATER, PokemonTypeEnum.GROUND, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/260.png"),
+                                new PokemonModel(261, "Poochyena", gen, PokemonTypeEnum.DARK, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/261.png")
+                        );
+                        case 4 -> List.of(
+                                new PokemonModel(387, "Turtwig", gen, PokemonTypeEnum.GRASS, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/387.png"),
+                                new PokemonModel(388, "Grotle", gen, PokemonTypeEnum.GRASS, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/388.png"),
+                                new PokemonModel(389, "Torterra", gen, PokemonTypeEnum.GRASS, PokemonTypeEnum.GROUND, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/389.png"),
+                                new PokemonModel(390, "Chimchar", gen, PokemonTypeEnum.FIRE, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/390.png"),
+                                new PokemonModel(391, "Monferno", gen, PokemonTypeEnum.FIRE, PokemonTypeEnum.FIGHTING, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/391.png"),
+                                new PokemonModel(392, "Infernape", gen, PokemonTypeEnum.FIRE, PokemonTypeEnum.FIGHTING, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/392.png"),
+                                new PokemonModel(393, "Piplup", gen, PokemonTypeEnum.WATER, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/393.png"),
+                                new PokemonModel(394, "Prinplup", gen, PokemonTypeEnum.WATER, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/394.png"),
+                                new PokemonModel(395, "Empoleon", gen, PokemonTypeEnum.WATER, PokemonTypeEnum.STEEL, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/395.png"),
+                                new PokemonModel(396, "Starly", gen, PokemonTypeEnum.NORMAL, PokemonTypeEnum.FLYING, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/396.png")
+                        );
+
+                        case 5 -> List.of(
+                                new PokemonModel(495, "Snivy", gen, PokemonTypeEnum.GRASS, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/495.png"),
+                                new PokemonModel(496, "Servine", gen, PokemonTypeEnum.GRASS, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/496.png"),
+                                new PokemonModel(497, "Serperior", gen, PokemonTypeEnum.GRASS, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/497.png"),
+                                new PokemonModel(498, "Tepig", gen, PokemonTypeEnum.FIRE, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/498.png"),
+                                new PokemonModel(499, "Pignite", gen, PokemonTypeEnum.FIRE, PokemonTypeEnum.FIGHTING, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/499.png"),
+                                new PokemonModel(500, "Emboar", gen, PokemonTypeEnum.FIRE, PokemonTypeEnum.FIGHTING, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/500.png"),
+                                new PokemonModel(501, "Oshawott", gen, PokemonTypeEnum.WATER, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/501.png"),
+                                new PokemonModel(502, "Dewott", gen, PokemonTypeEnum.WATER, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/502.png"),
+                                new PokemonModel(503, "Samurott", gen, PokemonTypeEnum.WATER, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/503.png"),
+                                new PokemonModel(504, "Patrat", gen, PokemonTypeEnum.NORMAL, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/504.png")
+                        );
+
+                        case 6 -> List.of(
+                                new PokemonModel(650, "Chespin", gen, PokemonTypeEnum.GRASS, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/650.png"),
+                                new PokemonModel(651, "Quilladin", gen, PokemonTypeEnum.GRASS, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/651.png"),
+                                new PokemonModel(652, "Chesnaught", gen, PokemonTypeEnum.GRASS, PokemonTypeEnum.FIGHTING, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/652.png"),
+                                new PokemonModel(653, "Fennekin", gen, PokemonTypeEnum.FIRE, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/653.png"),
+                                new PokemonModel(654, "Braixen", gen, PokemonTypeEnum.FIRE, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/654.png"),
+                                new PokemonModel(655, "Delphox", gen, PokemonTypeEnum.FIRE, PokemonTypeEnum.PSYCHIC, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/655.png"),
+                                new PokemonModel(656, "Froakie", gen, PokemonTypeEnum.WATER, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/656.png"),
+                                new PokemonModel(657, "Frogadier", gen, PokemonTypeEnum.WATER, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/657.png"),
+                                new PokemonModel(658, "Greninja", gen, PokemonTypeEnum.WATER, PokemonTypeEnum.DARK, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/658.png"),
+                                new PokemonModel(659, "Bunnelby", gen, PokemonTypeEnum.NORMAL, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/659.png")
+                        );
+
+                        case 7 -> List.of(
+                                new PokemonModel(722, "Rowlet", gen, PokemonTypeEnum.GRASS, PokemonTypeEnum.FLYING, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/722.png"),
+                                new PokemonModel(723, "Dartrix", gen, PokemonTypeEnum.GRASS, PokemonTypeEnum.FLYING, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/723.png"),
+                                new PokemonModel(724, "Decidueye", gen, PokemonTypeEnum.GRASS, PokemonTypeEnum.GHOST, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/724.png"),
+                                new PokemonModel(725, "Litten", gen, PokemonTypeEnum.FIRE, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/725.png"),
+                                new PokemonModel(726, "Torracat", gen, PokemonTypeEnum.FIRE, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/726.png"),
+                                new PokemonModel(727, "Incineroar", gen, PokemonTypeEnum.FIRE, PokemonTypeEnum.DARK, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/727.png"),
+                                new PokemonModel(728, "Popplio", gen, PokemonTypeEnum.WATER, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/728.png"),
+                                new PokemonModel(729, "Brionne", gen, PokemonTypeEnum.WATER, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/729.png"),
+                                new PokemonModel(730, "Primarina", gen, PokemonTypeEnum.WATER, PokemonTypeEnum.FAIRY, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/730.png"),
+                                new PokemonModel(731, "Pikipek", gen, PokemonTypeEnum.NORMAL, PokemonTypeEnum.FLYING, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/731.png")
+                        );
+
+                        case 8 -> List.of(
+                                new PokemonModel(810, "Grookey", gen, PokemonTypeEnum.GRASS, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/810.png"),
+                                new PokemonModel(811, "Thwackey", gen, PokemonTypeEnum.GRASS, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/811.png"),
+                                new PokemonModel(812, "Rillaboom", gen, PokemonTypeEnum.GRASS, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/812.png"),
+                                new PokemonModel(813, "Scorbunny", gen, PokemonTypeEnum.FIRE, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/813.png"),
+                                new PokemonModel(814, "Raboot", gen, PokemonTypeEnum.FIRE, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/814.png"),
+                                new PokemonModel(815, "Cinderace", gen, PokemonTypeEnum.FIRE, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/815.png"),
+                                new PokemonModel(816, "Sobble", gen, PokemonTypeEnum.WATER, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/816.png"),
+                                new PokemonModel(817, "Drizzile", gen, PokemonTypeEnum.WATER, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/817.png"),
+                                new PokemonModel(818, "Inteleon", gen, PokemonTypeEnum.WATER, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/818.png"),
+                                new PokemonModel(819, "Skwovet", gen, PokemonTypeEnum.NORMAL, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/819.png")
+                        );
+
+                        case 9 -> List.of(
+                                new PokemonModel(906, "Sprigatito", gen, PokemonTypeEnum.GRASS, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/906.png"),
+                                new PokemonModel(907, "Floragato", gen, PokemonTypeEnum.GRASS, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/907.png"),
+                                new PokemonModel(908, "Meowscarada", gen, PokemonTypeEnum.GRASS, PokemonTypeEnum.DARK, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/908.png"),
+                                new PokemonModel(909, "Fuecoco", gen, PokemonTypeEnum.FIRE, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/909.png"),
+                                new PokemonModel(910, "Crocalor", gen, PokemonTypeEnum.FIRE, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/910.png"),
+                                new PokemonModel(911, "Skeledirge", gen, PokemonTypeEnum.FIRE, PokemonTypeEnum.GHOST, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/911.png"),
+                                new PokemonModel(912, "Quaxly", gen, PokemonTypeEnum.WATER, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/912.png"),
+                                new PokemonModel(913, "Quaxwell", gen, PokemonTypeEnum.WATER, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/913.png"),
+                                new PokemonModel(914, "Quaquaval", gen, PokemonTypeEnum.WATER, PokemonTypeEnum.FIGHTING, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/914.png"),
+                                new PokemonModel(915, "Lechonk", gen, PokemonTypeEnum.NORMAL, null, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/915.png")
+                        );
+
+                        default -> List.of();
+                    };
+
+                    for (PokemonModel pokemon : pokemons) {
+                        if (pokemonRepository.findByNumber(pokemon.getNumber()).isEmpty()) {
+                            pokemon.setUserRegistered(ROLE_ADMIN);
+                            pokemon.setDateRegistered(LocalDateTime.now());
+                            pokemonRepository.save(pokemon);
+                        }
+                    }
+                }
+            }
+
+
+
+
 
         };
     }

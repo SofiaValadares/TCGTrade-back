@@ -20,9 +20,10 @@ public class PokemonModel extends AuditModel implements Serializable {
 
     @Column(nullable = false)
     private String name;
-    
-    @Column(nullable = false)
-    private Integer generation;
+
+    @ManyToOne()
+    @JoinColumn(name = "idGeneration", nullable = false)
+    private GenerationModel generation;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -60,11 +61,11 @@ public class PokemonModel extends AuditModel implements Serializable {
         this.name = name;
     }
 
-    public Integer getGeneration() {
+    public GenerationModel getGeneration() {
         return generation;
     }
 
-    public void setGeneration(Integer generation) {
+    public void setGeneration(GenerationModel generation) {
         this.generation = generation;
     }
 
@@ -94,8 +95,16 @@ public class PokemonModel extends AuditModel implements Serializable {
 
     public PokemonModel() {}
 
-    public PokemonModel(Long idPokemon, Integer number, String name, Integer generation, PokemonTypeEnum primaryType, PokemonTypeEnum secondaryType, String imageUrl) {
+    public PokemonModel(Long idPokemon, Integer number, String name, PokemonTypeEnum primaryType, PokemonTypeEnum secondaryType, String imageUrl) {
         this.idPokemon = idPokemon;
+        this.number = number;
+        this.name = name;
+        this.primaryType = primaryType;
+        this.secondaryType = secondaryType;
+        this.imageUrl = imageUrl;
+    }
+
+    public PokemonModel(Integer number, String name, GenerationModel generation, PokemonTypeEnum primaryType, PokemonTypeEnum secondaryType, String imageUrl) {
         this.number = number;
         this.name = name;
         this.generation = generation;
@@ -103,6 +112,4 @@ public class PokemonModel extends AuditModel implements Serializable {
         this.secondaryType = secondaryType;
         this.imageUrl = imageUrl;
     }
-
-
 }

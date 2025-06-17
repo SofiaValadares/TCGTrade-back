@@ -1,7 +1,10 @@
 package br.com.arquitetura.spring.jpa.controllers;
 
+import br.com.arquitetura.spring.jpa.dtos.GenerationListResponseDto;
 import br.com.arquitetura.spring.jpa.dtos.GenerationRecordDto;
 import br.com.arquitetura.spring.jpa.dtos.GenerationResponseDto;
+import br.com.arquitetura.spring.jpa.dtos.PokemonResponseDto;
+import br.com.arquitetura.spring.jpa.enums.PokemonTypeEnum;
 import br.com.arquitetura.spring.jpa.models.GenerationModel;
 import br.com.arquitetura.spring.jpa.services.GenerationService;
 import jakarta.validation.Valid;
@@ -10,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -25,27 +29,27 @@ public class GenerationController {
     }
 
     @GetMapping("/generation")
-    public ResponseEntity<List<GenerationResponseDto>> getAllGenerations() {
+    public ResponseEntity<List<GenerationListResponseDto>> getAllGenerations() {
         List<GenerationModel> generations = generationService.getAllGenerations();
-        List<GenerationResponseDto> generationsDto = generations.stream()
-                .map(this::mapToGenerationResponseDto)
+        List<GenerationListResponseDto> generationsDto = generations.stream()
+                .map(this::mapToGenerationListResponseDto)
                 .toList();
 
         return new ResponseEntity<>(generationsDto, HttpStatus.OK);
     }
 
     @GetMapping("/generation/{id}")
-    public ResponseEntity<GenerationResponseDto> getOneGeneration(@PathVariable(value = "id") Long id, Locale locale) {
+    public ResponseEntity<GenerationListResponseDto> getOneGeneration(@PathVariable(value = "id") Long id, Locale locale) {
         GenerationModel generation = generationService.getOneGeneration(id, locale);
 
-        return ResponseEntity.ok(mapToGenerationResponseDto(generation));
+        return ResponseEntity.ok(mapToGenerationListResponseDto(generation));
     }
 
     @GetMapping("/generation/{number}")
-    public ResponseEntity<GenerationResponseDto> getOneGenerationByNumber(@PathVariable(value = "number") Integer number, Locale locale) {
+    public ResponseEntity<GenerationListResponseDto> getOneGenerationByNumber(@PathVariable(value = "number") Integer number, Locale locale) {
         GenerationModel generation = generationService.getOneGenerationByNumber(number, locale);
 
-        return ResponseEntity.ok(mapToGenerationResponseDto(generation));
+        return ResponseEntity.ok(mapToGenerationListResponseDto(generation));
     }
 
     @PostMapping("/generation")
@@ -90,5 +94,31 @@ public class GenerationController {
                 generationModel.getDateChanged(),
                 generationModel.getUserChanged()
         );
+    }
+
+    private GenerationListResponseDto mapToGenerationListResponseDto(GenerationModel generationModels) {
+        List<PokemonResponseDto> pokemonResponseDtoList = generationModels.getPokemonModels().stream().map(
+                pokemonModel -> new PokemonResponseDto(
+                    pokemonModel.getIdPokemon(),
+                    pokemonModel.getName(),
+                    pokemonModel.getNumber(),
+                    pokemonModel.getGeneration().getNumber(),
+                    pokemonModel.getPrimaryType(),
+                    pokemonModel.getSecondaryType(),
+                    pokemonModel.getImageUrl(),
+                    pokemonModel.getDateRegistered(),
+                    pokemonModel.getUserRegistered(),
+                    pokemonModel.getDateChanged(),
+                    pokemonModel.getUserChanged()
+                )).toList();
+
+        GenerationListResponseDto generationListResponseDto = new GenerationListResponseDto(
+                generationModels.getIdGeneration(),
+                generationModels.getNumber(),
+                generationModels.getRegion(),
+                pokemonResponseDtoList
+        );
+
+        return generationListResponseDto;
     }
 }
