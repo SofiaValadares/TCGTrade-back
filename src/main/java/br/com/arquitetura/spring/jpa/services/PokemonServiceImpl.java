@@ -62,7 +62,13 @@ public class PokemonServiceImpl implements PokemonService {
             }
         }
 
-        // TO-DO: erro de geraçao vazia
+        if (pokemonModel.getGeneration() == null) {
+            throw ResourceFoundException.withMessage(
+                    messageSource, "error.pokemon.generation.mandatory",
+                    new Object[]{},
+                    locale
+            );
+        }
 
         if (pokemonModel.getPrimaryType() == null) {
             throw ResourceFoundException.withMessage(
