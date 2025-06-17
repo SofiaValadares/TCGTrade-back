@@ -115,6 +115,9 @@ public class WebSecurityConfig {
 
                                 .requestMatchers(HttpMethod.GET, "/api/files/{filename:.+}").hasAnyRole(ROLE_ADMIN, ROLE_USER)
 
+                                .requestMatchers(HttpMethod.GET, "/api/pokemon").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/generation").permitAll()
+
                                 .anyRequest().authenticated()
                 )
                 .cors(withDefaults())
