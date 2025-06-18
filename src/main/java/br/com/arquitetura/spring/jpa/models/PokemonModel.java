@@ -58,7 +58,7 @@ public class PokemonModel extends AuditModel implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name.toUpperCase();
     }
 
     public GenerationModel getGeneration() {
@@ -98,7 +98,7 @@ public class PokemonModel extends AuditModel implements Serializable {
     public PokemonModel(Long idPokemon, Integer number, String name, PokemonTypeEnum primaryType, PokemonTypeEnum secondaryType, String imageUrl) {
         this.idPokemon = idPokemon;
         this.number = number;
-        this.name = name;
+        this.name = name.toUpperCase();
         this.primaryType = primaryType;
         this.secondaryType = secondaryType;
         this.imageUrl = imageUrl;
@@ -106,7 +106,7 @@ public class PokemonModel extends AuditModel implements Serializable {
 
     public PokemonModel(Integer number, String name, GenerationModel generation, PokemonTypeEnum primaryType, PokemonTypeEnum secondaryType, String imageUrl) {
         this.number = number;
-        this.name = name;
+        this.name = name.toUpperCase();
         this.generation = generation;
         this.primaryType = primaryType;
         this.secondaryType = secondaryType;
