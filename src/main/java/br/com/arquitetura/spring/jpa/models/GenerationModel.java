@@ -21,6 +21,7 @@ public class GenerationModel extends AuditModel implements Serializable {
     private String region;
 
     @OneToMany(mappedBy = "generation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("number ASC")
     private List<PokemonModel> pokemonModels;
 
     public GenerationModel() {

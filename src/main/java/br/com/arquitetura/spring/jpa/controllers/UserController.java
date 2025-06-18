@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 import java.util.Locale;
 import java.util.*;
@@ -180,6 +181,20 @@ public class UserController {
         response.put("message", "User deleted successfully");
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @GetMapping("/users/me")
+    public ResponseEntity<UserRoleResponseDto> getCurrentUser(Authentication authentication) {
+        org.springframework.security.core.userdetails.User userDetails =
+                (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+
+        String username = userDetails.getUsername();
+
+        UserModel user = userService.getUserByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return ResponseEntity.ok(mapToUserRoleResponseDto(user));
+    }
+
 
     @GetMapping("/users/page")
     public Page<UserResponseDto> getAllPageUsers(
