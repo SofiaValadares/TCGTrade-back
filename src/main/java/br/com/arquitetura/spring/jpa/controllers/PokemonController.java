@@ -62,7 +62,7 @@ public class PokemonController {
             @RequestParam(required = false) Integer generation
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(order), sort));
-        Specification<PokemonModel> spec = Specification.where(nameContains(name)).and(numberEquals(number).and(generationEquals(generation)));
+        Specification<PokemonModel> spec = Specification.where(nameContains(name)).and(numberLike(number).and(generationEquals(generation)));
         Page<PokemonModel> pokemonModels = pokemonService.getAllPagePokemons(spec, pageable);
 
         return ResponseEntity.ok(pokemonModels.map(this::mapToPokemonResponseDto));
@@ -114,19 +114,27 @@ public class PokemonController {
         };
     }
 
-    Specification<PokemonModel> numberEquals(Integer number) {
+    Specification<PokemonModel> numberLike(Integer number) {
         return (root, query, criteriaBuilder) -> {
             if (number == null) return null;
-            return criteriaBuilder.equal(root.get("number"), number);
+
+            return criteriaBuilder.like(
+                    criteriaBuilder.concat(
+                            criteriaBuilder.literal(""),
+                            root.get("number").as(String.class)
+                    ),
+                    "%" + number + "%"
+            );
         };
     }
 
     Specification<PokemonModel> generationEquals(Integer generation) {
         return (root, query, criteriaBuilder) -> {
             if (generation == null) return null;
-            return criteriaBuilder.equal(root.get("generation"), generation);
+            return criteriaBuilder.equal(root.get("generation").get("number"), generation);
         };
     }
+
 
     private PokemonResponseDto mapToPokemonResponseDto(PokemonModel pokemonModel) {
         return new PokemonResponseDto(

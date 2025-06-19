@@ -97,26 +97,10 @@ public class GenerationController {
     }
 
     private GenerationListResponseDto mapToGenerationListResponseDto(GenerationModel generationModels) {
-        List<PokemonResponseDto> pokemonResponseDtoList = generationModels.getPokemonModels().stream().map(
-                pokemonModel -> new PokemonResponseDto(
-                    pokemonModel.getIdPokemon(),
-                    pokemonModel.getName(),
-                    pokemonModel.getNumber(),
-                    pokemonModel.getGeneration().getNumber(),
-                    pokemonModel.getPrimaryType(),
-                    pokemonModel.getSecondaryType(),
-                    pokemonModel.getImageUrl(),
-                    pokemonModel.getDateRegistered(),
-                    pokemonModel.getUserRegistered(),
-                    pokemonModel.getDateChanged(),
-                    pokemonModel.getUserChanged()
-                )).toList();
-
         GenerationListResponseDto generationListResponseDto = new GenerationListResponseDto(
                 generationModels.getIdGeneration(),
                 generationModels.getNumber(),
-                generationModels.getRegion(),
-                pokemonResponseDtoList
+                generationModels.getRegion()
         );
 
         return generationListResponseDto;
