@@ -107,6 +107,19 @@ public class PokemonController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @GetMapping("/pokemon/exists")
+    public ResponseEntity<Map<String, Boolean>> existsPokemon(
+            @RequestParam Integer number
+    ) {
+        boolean exists = pokemonService.existsByNumber(number);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("exists", exists);
+
+        return ResponseEntity.ok(response);
+    }
+
+
     Specification<PokemonModel> nameContains(String name) {
         return (root, query, criteriaBuilder) -> {
             if (name == null || name.isEmpty()) return null;

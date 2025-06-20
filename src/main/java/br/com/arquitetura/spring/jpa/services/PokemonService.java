@@ -18,7 +18,10 @@ public interface PokemonService {
 
     PokemonModel getOnePokemon(Long id, Locale locale);
 
+
     List<PokemonModel> getAllPokemons();
 
     Page<PokemonModel> getAllPagePokemons(Specification<PokemonModel> spec, Pageable pageable);
+
+    boolean existsByNumber(Integer number);
 }

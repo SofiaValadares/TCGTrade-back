@@ -17,4 +17,6 @@ public interface PokemonRepository extends JpaRepository<PokemonModel, Long> {
     List<PokemonModel> findAllByOrderByNumberAsc();
 
     Optional<PokemonModel> findByNumber(Integer number);
+
+    boolean existsByNumber(Integer number);
 }

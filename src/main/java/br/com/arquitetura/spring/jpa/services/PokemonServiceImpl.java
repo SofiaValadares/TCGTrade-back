@@ -159,4 +159,10 @@ public class PokemonServiceImpl implements PokemonService {
         return pokemonRepository.findAll(spec, pageable);
     }
 
+    @Override
+    public boolean existsByNumber(Integer number) {
+        return pokemonRepository.existsByNumber(number);
+    }
+
+
 }
