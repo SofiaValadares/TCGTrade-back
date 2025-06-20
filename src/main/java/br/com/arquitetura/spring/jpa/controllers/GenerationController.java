@@ -105,4 +105,16 @@ public class GenerationController {
 
         return generationListResponseDto;
     }
+
+    @GetMapping("/generation/exists")
+    public ResponseEntity<Map<String, Boolean>> existsGeneration (
+            @RequestParam Integer number
+    ) {
+        boolean exists = generationService.existsByNumber(number);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("exists", exists);
+
+        return ResponseEntity.ok(response);
+    }
 }

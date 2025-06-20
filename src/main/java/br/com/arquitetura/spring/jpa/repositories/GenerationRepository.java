@@ -12,4 +12,6 @@ public interface GenerationRepository extends JpaRepository<GenerationModel, Lon
     List<GenerationModel> findAllByOrderByNumberAsc();
     Optional<GenerationModel> findByIdGeneration(Long idGeneration);
     Optional<GenerationModel> findByNumber(Integer number);
+
+    boolean existsByNumber(Integer number);
 }

@@ -21,4 +21,6 @@ public interface GenerationService {
     GenerationModel getOneGenerationByNumber(Integer number, Locale locale);
 
     List<GenerationModel> getAllGenerations();
+
+    boolean existsByNumber(Integer number);
 }

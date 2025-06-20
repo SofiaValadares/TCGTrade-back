@@ -72,4 +72,9 @@ public class GenerationServiceImpl  implements GenerationService{
     public List<GenerationModel> getAllGenerations() {
         return generationRepository.findAllByOrderByNumberAsc();
     }
+
+    @Override
+    public boolean existsByNumber(Integer number) {
+        return generationRepository.existsByNumber(number);
+    }
 }
