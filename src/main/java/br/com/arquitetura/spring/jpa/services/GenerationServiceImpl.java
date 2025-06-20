@@ -70,6 +70,6 @@ public class GenerationServiceImpl  implements GenerationService{
 
     @Override
     public List<GenerationModel> getAllGenerations() {
-        return generationRepository.findAll();
+        return generationRepository.findAllByOrderByNumberAsc();
     }
 }

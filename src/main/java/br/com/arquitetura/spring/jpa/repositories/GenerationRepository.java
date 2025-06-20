@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface GenerationRepository extends JpaRepository<GenerationModel, Long> {
+    List<GenerationModel> findAllByOrderByNumberAsc();
     Optional<GenerationModel> findByIdGeneration(Long idGeneration);
     Optional<GenerationModel> findByNumber(Integer number);
 }
