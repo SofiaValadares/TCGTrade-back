@@ -26,12 +26,12 @@ public class CardServiceImpl implements CardService{
 
     @Override
     public CardModel saveCard(CardModel card, Locale locale) {
-        Optional<CardModel> cardOptional = cardRepository.findCardModelByCollectionAndNumberCard(card.getCollection(), card.getNumberCard());
+        Optional<CardModel> cardOptional = cardRepository.findByCollectionAndNumber(card.getCollection(), card.getNumber());
 
         if (cardOptional.isPresent()) {
             throw ResourceFoundException.withMessage(
                     messageSource, "error.card.save.exists",
-                    new Object[] {card.getCollection(), card.getNumberCard()},
+                    new Object[] {card.getCollection(), card.getNumber()},
                     locale
                     );
         }
@@ -62,6 +62,11 @@ public class CardServiceImpl implements CardService{
     @Override
     public List<CardModel> findByPokemonModelIdPokemon(Long idPokemon) {
         return cardRepository.findByPokemonModel_IdPokemon(idPokemon);
+    }
+
+    @Override
+    public List<CardModel> findByCollectionModelIdCollection(Long idCollection) {
+        return cardRepository.findByCollection_IdCollectionOrderByNumberAsc(idCollection);
     }
 
     @Override

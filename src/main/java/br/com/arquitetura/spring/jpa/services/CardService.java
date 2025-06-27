@@ -12,6 +12,8 @@ import java.util.Optional;
 public interface CardService {
     List<CardModel> findByPokemonModelIdPokemon(Long idPokemon);
 
+    List<CardModel> findByCollectionModelIdCollection(Long idCollection);
+
     List<CardModel> getAllCards();
 
     Optional<CardModel> getOneCard(Long id);

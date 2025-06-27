@@ -1,9 +1,6 @@
 package br.com.arquitetura.spring.jpa.controllers;
 
-import br.com.arquitetura.spring.jpa.dtos.CardListResponseDto;
-import br.com.arquitetura.spring.jpa.dtos.PokemonListResponseDto;
-import br.com.arquitetura.spring.jpa.dtos.PokemonRecordDto;
-import br.com.arquitetura.spring.jpa.dtos.PokemonResponseDto;
+import br.com.arquitetura.spring.jpa.dtos.*;
 import br.com.arquitetura.spring.jpa.globals.exceptionhandler.ResourceNotFoundException;
 import br.com.arquitetura.spring.jpa.models.GenerationModel;
 import br.com.arquitetura.spring.jpa.models.PokemonModel;
@@ -162,28 +159,6 @@ public class PokemonController {
                 pokemonModel.getUserRegistered(),
                 pokemonModel.getDateChanged(),
                 pokemonModel.getUserChanged()
-        );
-    }
-
-    private PokemonListResponseDto mapToPokemonListResponseDto(PokemonModel pokemonModel) {
-        List<CardListResponseDto> cards = pokemonModel.getCardModels().stream()
-                .map(item -> new CardListResponseDto(
-                        item.getIdCard(),
-                        item.getNameCard(),
-                        item.getCollection(),
-                        item.getNumberCard()
-                ))
-                .toList();
-
-        return new PokemonListResponseDto(
-                pokemonModel.getIdPokemon(),
-                pokemonModel.getName(),
-                pokemonModel.getNumber(),
-                pokemonModel.getGeneration().getNumber(),
-                pokemonModel.getPrimaryType(),
-                pokemonModel.getSecondaryType(),
-                pokemonModel.getImageUrl(),
-                cards
         );
     }
 }

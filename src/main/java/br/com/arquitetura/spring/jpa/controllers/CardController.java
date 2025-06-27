@@ -2,10 +2,14 @@ package br.com.arquitetura.spring.jpa.controllers;
 
 import br.com.arquitetura.spring.jpa.dtos.CardRecordDto;
 import br.com.arquitetura.spring.jpa.dtos.CardResponseDto;
+import br.com.arquitetura.spring.jpa.dtos.CollectionSummaryDto;
+import br.com.arquitetura.spring.jpa.dtos.PokemonSummaryDto;
 import br.com.arquitetura.spring.jpa.globals.exceptionhandler.ResourceNotFoundException;
 import br.com.arquitetura.spring.jpa.models.CardModel;
+import br.com.arquitetura.spring.jpa.models.CollectionModel;
 import br.com.arquitetura.spring.jpa.models.PokemonModel;
 import br.com.arquitetura.spring.jpa.services.CardService;
+import br.com.arquitetura.spring.jpa.services.CollectionService;
 import br.com.arquitetura.spring.jpa.services.PokemonService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
@@ -28,37 +32,43 @@ public class CardController {
 
     private final CardService cardService;
     private final PokemonService pokemonService;
+    private final CollectionService collectionService;
     private final MessageSource messageSource;
 
     public CardController(
             CardService cardService,
-            PokemonService pokemonService,
+            PokemonService pokemonService, CollectionService collectionService,
             MessageSource messageSource
     ) {
         this.cardService = cardService;
         this.pokemonService = pokemonService;
+        this.collectionService = collectionService;
         this.messageSource = messageSource;
     }
 
     @GetMapping("/cards")
-    public ResponseEntity<List<CardResponseDto>> getAllCards(@RequestParam(required = false) Long idPokemon, Locale locale) {
-        if (idPokemon == null) {
-            throw ResourceNotFoundException.withMessage(
-                    messageSource, "error.pokemon.id.mandatory",
-                    new Object[]{idPokemon},
-                    locale
-            );
-        } else {
+    public ResponseEntity<List<CardResponseDto>> getAllCards(
+            @RequestParam(required = false) Long idPokemon,
+            @RequestParam(required = false) Long idCollection,
+            Locale locale) {
+
+        List<CardModel> cardList;
+
+        if (idPokemon != null) {
             PokemonModel pokemonModel = pokemonService.getOnePokemon(idPokemon, locale);
-            List<CardModel> cardList = cardService.findByPokemonModelIdPokemon(pokemonModel.getIdPokemon());
-            List<CardResponseDto> responseList = cardList.stream()
-                    .map(this::mapToCardResponseDto)
-                    .toList();
+            cardList = cardService.findByPokemonModelIdPokemon(pokemonModel.getIdPokemon());
 
-            return ResponseEntity.status(HttpStatus.OK).body(responseList);
+        } else if (idCollection != null) {
+            CollectionModel collectionModel = collectionService.getOneCollection(idCollection, locale);
+            cardList = cardService.findByCollectionModelIdCollection(collectionModel.getIdCollection());
 
+        } else {
+            cardList = cardService.getAllCards();
         }
+
+        return ResponseEntity.ok(toResponseList(cardList));
     }
+
 
     @GetMapping("/cards/{id}")
     public ResponseEntity<CardResponseDto> getOneCard(@PathVariable(value = "id") Long id, Locale locale) {
@@ -78,12 +88,20 @@ public class CardController {
     @PostMapping("/cards")
     public ResponseEntity<CardResponseDto> saveCard(@RequestBody @Valid CardRecordDto cardRecordDto, Locale locale) {
         var cardModel = new CardModel();
-        var idPokemon = cardRecordDto.idPokemon();
-        PokemonModel pokemonModel = pokemonService.getOnePokemon(idPokemon, locale);
 
         BeanUtils.copyProperties(cardRecordDto, cardModel);
 
-        cardModel.setPokemonModel(pokemonModel);
+        var idPokemon = cardRecordDto.idPokemon();
+
+        if (idPokemon != null) {
+            PokemonModel pokemonModel = pokemonService.getOnePokemon(idPokemon, locale);
+            cardModel.setPokemonModel(pokemonModel);
+        }
+
+        var idCollection = cardRecordDto.idCollection();
+        CollectionModel collectionModel = collectionService.getOneCollection(idCollection, locale);
+        cardModel.setCollection(collectionModel);
+
         CardModel saveCard = cardService.saveCard(cardModel, locale);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(mapToCardResponseDto(saveCard));
@@ -102,11 +120,20 @@ public class CardController {
             );
         }
 
-        var idPokemon = cardRecordDto.idPokemon();
-        PokemonModel pokemonModel = pokemonService.getOnePokemon(idPokemon, locale);
-
         var cardModel = cardOptional.get();
         BeanUtils.copyProperties(cardRecordDto, cardModel);
+
+        var idPokemon = cardRecordDto.idPokemon();
+
+        if (idPokemon != null) {
+            PokemonModel pokemonModel = pokemonService.getOnePokemon(idPokemon, locale);
+            cardModel.setPokemonModel(pokemonModel);
+        }
+
+        var idCollection = cardRecordDto.idCollection();
+        CollectionModel collectionModel = collectionService.getOneCollection(idCollection, locale);
+        cardModel.setCollection(collectionModel);
+
         CardModel updateCard = cardService.updateCard(cardModel);
 
         return ResponseEntity.status(HttpStatus.OK).body(mapToCardResponseDto(updateCard));
@@ -133,7 +160,7 @@ public class CardController {
     public Page<CardResponseDto> getAllPageCards(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sort,
+            @RequestParam(defaultValue = "idCard") String sort,
             @RequestParam(defaultValue = "asc") String order,
             @RequestParam(required = false) Long idPokemon,
             @RequestParam(required = false) Long idCard,
@@ -187,17 +214,51 @@ public class CardController {
     }
 
     private CardResponseDto mapToCardResponseDto(CardModel cardModel) {
+        PokemonModel pokemonModel = cardModel.getPokemonModel();
+        CollectionModel collection = cardModel.getCollection();
+
+        PokemonSummaryDto pokemonSummaryDto = null;
+        if (pokemonModel != null) {
+            pokemonSummaryDto = new PokemonSummaryDto(
+                    pokemonModel.getIdPokemon(),
+                    pokemonModel.getName(),
+                    pokemonModel.getNumber()
+            );
+        }
+
+        CollectionSummaryDto collectionSummaryDto = null;
+        if (collection != null) {
+            collectionSummaryDto = new CollectionSummaryDto(
+                    collection.getIdCollection(),
+                    collection.getName()
+            );
+        }
+
         return new CardResponseDto(
                 cardModel.getIdCard(),
-                cardModel.getPokemonModel().getIdPokemon(),
-                cardModel.getNameCard(),
-                cardModel.getCollection(),
-                cardModel.getNumberCard(),
+                cardModel.getName(),
+                collectionSummaryDto,
+                cardModel.getNumber(),
+                cardModel.getType(),
+                cardModel.getRotationLetter(),
+                cardModel.getRarity(),
+                cardModel.getVariants(),
+                cardModel.getImageUrl(),
+                pokemonSummaryDto,
                 cardModel.getDateRegistered(),
                 cardModel.getUserRegistered(),
                 cardModel.getDateChanged(),
                 cardModel.getUserChanged()
         );
     }
+
+
+
+    private List<CardResponseDto> toResponseList(List<CardModel> cardList) {
+        return cardList.stream()
+                .map(this::mapToCardResponseDto)
+                .toList();
+    }
+
 
 }
