@@ -1783,6 +1783,182 @@ public class Sv10PtbrCollectionInitializer {
                 53
         ));
 
+        cards.add(buildCard(
+                "Hype da Emcee", 220, CardTypeEnum.SUPPORTER,
+                CardRarityEnum.ULTRA_RARE,
+                List.of(CardVariantEnum.HOLO),
+                "https://assets.pokemon.com/static-assets/content-assets/cms2-pt-br/img/cards/web/SV10/SV10_PT-BR_220.png"
+        ));
+
+        cards.add(buildCard(
+                "Aventura do Ethan", 221, CardTypeEnum.SUPPORTER,
+                CardRarityEnum.ULTRA_RARE,
+                List.of(CardVariantEnum.HOLO),
+                "https://assets.pokemon.com/static-assets/content-assets/cms2-pt-br/img/cards/web/SV10/SV10_PT-BR_221.png"
+        ));
+
+        cards.add(buildCard(
+                "Juiz", 222, CardTypeEnum.SUPPORTER, "G",
+                CardRarityEnum.ULTRA_RARE,
+                List.of(CardVariantEnum.HOLO),
+                "https://assets.pokemon.com/static-assets/content-assets/cms2-pt-br/img/cards/web/SV10/SV10_PT-BR_222.png"
+        ));
+
+        cards.add(buildCard(
+                "Apollo da Equipe Rocket", 223, CardTypeEnum.SUPPORTER,
+                CardRarityEnum.ULTRA_RARE,
+                List.of(CardVariantEnum.HOLO),
+                "https://assets.pokemon.com/static-assets/content-assets/cms2-pt-br/img/cards/web/SV10/SV10_PT-BR_223.png"
+        ));
+
+        cards.add(buildCard(
+                "Athena da Equipe Rocket", 224, CardTypeEnum.SUPPORTER,
+                CardRarityEnum.ULTRA_RARE,
+                List.of(CardVariantEnum.HOLO),
+                "https://assets.pokemon.com/static-assets/content-assets/cms2-pt-br/img/cards/web/SV10/SV10_PT-BR_224.png"
+        ));
+
+        cards.add(buildCard(
+                "Giovanni da Equipe Rocket", 225, CardTypeEnum.SUPPORTER,
+                CardRarityEnum.ULTRA_RARE,
+                List.of(CardVariantEnum.HOLO),
+                "https://assets.pokemon.com/static-assets/content-assets/cms2-pt-br/img/cards/web/SV10/SV10_PT-BR_225.png"
+        ));
+
+        cards.add(buildCard(
+                "Petrel da Equipe Rocket", 226, CardTypeEnum.SUPPORTER,
+                CardRarityEnum.ULTRA_RARE,
+                List.of(CardVariantEnum.HOLO),
+                "https://assets.pokemon.com/static-assets/content-assets/cms2-pt-br/img/cards/web/SV10/SV10_PT-BR_226.png"
+        ));
+
+        cards.add(buildCard(
+                "Próton da Equipe Rocket", 227, CardTypeEnum.SUPPORTER,
+                CardRarityEnum.ULTRA_RARE,
+                List.of(CardVariantEnum.HOLO),
+                "https://assets.pokemon.com/static-assets/content-assets/cms2-pt-br/img/cards/web/SV10/SV10_PT-BR_227.png"
+        ));
+
+        cards.add(buildCard(
+                "Yanmega EX", 228, CardTypeEnum.GRASS,
+                CardRarityEnum.SPECIAL_ILLUSTRATION_RARE,
+                List.of(CardVariantEnum.HOLO),
+                "https://assets.pokemon.com/static-assets/content-assets/cms2-pt-br/img/cards/web/SV10/SV10_PT-BR_228.png",
+                469
+        ));
+
+        cards.add(buildCard(
+                "Moltres EX da Equipe Rocket", 229, CardTypeEnum.FIRE,
+                CardRarityEnum.SPECIAL_ILLUSTRATION_RARE,
+                List.of(CardVariantEnum.HOLO),
+                "https://assets.pokemon.com/static-assets/content-assets/cms2-pt-br/img/cards/web/SV10/SV10_PT-BR_229.png",
+                146
+        ));
+
+        cards.add(buildCard(
+                "Ho-Oh EX do Ethan", 230, CardTypeEnum.FIRE,
+                CardRarityEnum.SPECIAL_ILLUSTRATION_RARE,
+                List.of(CardVariantEnum.HOLO),
+                "https://assets.pokemon.com/static-assets/content-assets/cms2-pt-br/img/cards/web/SV10/SV10_PT-BR_230.png",
+                250
+        ));
+
+        cards.add(buildCard(
+                "Mewtwo EX da Equipe Rocket", 231, CardTypeEnum.PSYCHIC,
+                CardRarityEnum.SPECIAL_ILLUSTRATION_RARE,
+                List.of(CardVariantEnum.HOLO),
+                "https://assets.pokemon.com/static-assets/content-assets/cms2-pt-br/img/cards/web/SV10/SV10_PT-BR_231.png",
+                150
+        ));
+
+        cards.add(buildCard(
+                "Garchomp EX da Cíntia", 232, CardTypeEnum.FIGHTING,
+                CardRarityEnum.SPECIAL_ILLUSTRATION_RARE,
+                List.of(CardVariantEnum.HOLO),
+                "https://assets.pokemon.com/static-assets/content-assets/cms2-pt-br/img/cards/web/SV10/SV10_PT-BR_232.png",
+                445
+        ));
+
+        cards.add(buildCard(
+                "Nidoking EX da Equipe Rocket", 233, CardTypeEnum.DARK,
+                CardRarityEnum.SPECIAL_ILLUSTRATION_RARE,
+                List.of(CardVariantEnum.HOLO),
+                "https://assets.pokemon.com/static-assets/content-assets/cms2-pt-br/img/cards/web/SV10/SV10_PT-BR_233.png",
+                34
+        ));
+
+        cards.add(buildCard(
+                "Crobat EX da Equipe Rocket", 234, CardTypeEnum.DARK,
+                CardRarityEnum.SPECIAL_ILLUSTRATION_RARE,
+                List.of(CardVariantEnum.HOLO),
+                "https://assets.pokemon.com/static-assets/content-assets/cms2-pt-br/img/cards/web/SV10/SV10_PT-BR_234.png",
+                169
+        ));
+
+        cards.add(buildCard(
+                "Mabosstiff EX do Arven", 235, CardTypeEnum.DARK,
+                CardRarityEnum.SPECIAL_ILLUSTRATION_RARE,
+                List.of(CardVariantEnum.HOLO),
+                "https://assets.pokemon.com/static-assets/content-assets/cms2-pt-br/img/cards/web/SV10/SV10_PT-BR_235.png",
+                943
+        ));
+
+        cards.add(buildCard(
+                "Aventura do Ethan", 236, CardTypeEnum.SUPPORTER,
+                CardRarityEnum.SPECIAL_ILLUSTRATION_RARE,
+                List.of(CardVariantEnum.HOLO),
+                "https://assets.pokemon.com/static-assets/content-assets/cms2-pt-br/img/cards/web/SV10/SV10_PT-BR_236.png"
+        ));
+
+        cards.add(buildCard(
+                "Athena da Equipe Rocket", 237, CardTypeEnum.SUPPORTER,
+                CardRarityEnum.SPECIAL_ILLUSTRATION_RARE,
+                List.of(CardVariantEnum.HOLO),
+                "https://assets.pokemon.com/static-assets/content-assets/cms2-pt-br/img/cards/web/SV10/SV10_PT-BR_237.png"
+        ));
+
+        cards.add(buildCard(
+                "Giovanni da Equipe Rocket", 238, CardTypeEnum.SUPPORTER,
+                CardRarityEnum.SPECIAL_ILLUSTRATION_RARE,
+                List.of(CardVariantEnum.HOLO),
+                "https://assets.pokemon.com/static-assets/content-assets/cms2-pt-br/img/cards/web/SV10/SV10_PT-BR_238.png"
+        ));
+
+        cards.add(buildCard(
+                "Ho-Oh EX do Ethan", 239, CardTypeEnum.FIRE,
+                CardRarityEnum.SECRET_RARE,
+                List.of(CardVariantEnum.HOLO),
+                "https://assets.pokemon.com/static-assets/content-assets/cms2-pt-br/img/cards/web/SV10/SV10_PT-BR_239.png",
+                250
+        ));
+
+        cards.add(buildCard(
+                "Mewtwo EX da Equipe Rocket", 240, CardTypeEnum.PSYCHIC,
+                CardRarityEnum.SECRET_RARE,
+                List.of(CardVariantEnum.HOLO),
+                "https://assets.pokemon.com/static-assets/content-assets/cms2-pt-br/img/cards/web/SV10/SV10_PT-BR_240.png",
+                150
+        ));
+
+        cards.add(buildCard(
+                "Garchomp EX da Cíntia", 241, CardTypeEnum.FIGHTING,
+                CardRarityEnum.SECRET_RARE,
+                List.of(CardVariantEnum.HOLO),
+                "https://assets.pokemon.com/static-assets/content-assets/cms2-pt-br/img/cards/web/SV10/SV10_PT-BR_241.png",
+                445
+        ));
+
+        cards.add(buildCard(
+                "Crobat EX da Equipe Rocket", 242, CardTypeEnum.DARK,
+                CardRarityEnum.SECRET_RARE,
+                List.of(CardVariantEnum.HOLO),
+                "https://assets.pokemon.com/static-assets/content-assets/cms2-pt-br/img/cards/web/SV10/SV10_PT-BR_242.png",
+                169
+        ));
+
+
+
+
         return cards;
     }
 
