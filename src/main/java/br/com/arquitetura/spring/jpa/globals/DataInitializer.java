@@ -37,7 +37,9 @@ public class DataInitializer {
                                   ) {
         return args -> {
             // Criar as roles
+            RoleModel roleUser = createRoleIfNotFound("ROLE_USER", roleRepository);
             RoleModel roleAdmin = createRoleIfNotFound("ROLE_ADMIN", roleRepository);
+            RoleModel roleMaster = createRoleIfNotFound("ROLE_MASTER", roleRepository);
 
             // Verificar se o usuario admin já existe
             Optional<UserModel> adminUserOpt = userRepository.findByUsername(ROLE_ADMIN);
@@ -255,27 +257,23 @@ public class DataInitializer {
                 }
             }
 
-            Swsh11PtbrCollectionInitializer.setPokemonRepository(pokemonRepository);
-            Swsh12PtbrCollectionInitializer.setPokemonRepository(pokemonRepository);
-            Sv10PtbrCollectionInitializer.setPokemonRepository(pokemonRepository);
-
-
-            Map<String, Supplier<CollectionModel>> collectionSuppliers = Map.of(
-                    "swsh11-ptbr", Swsh11PtbrCollectionInitializer::getCollection,
-                    "swsh12-ptbr", Swsh12PtbrCollectionInitializer::getCollection,
-                    "sv10-ptbr", Sv10PtbrCollectionInitializer::getCollection
+            Map<String, CollectionInitializer> initializerMap = Map.of(
+                    "sv10-ptbr",new ScarletViolet10PtbrCollectionInitializer(),
+                    "sv09-ptbr", new ScarletViolet09PtbrCollectionInitializer(),
+                    "sv08pt5-ptbr", new ScarletViolet08pt5PtbrCollectionInitializer(),
+                    "sv08-ptbr", new ScarletViolet08PtbrCollectionInitializer()
             );
 
-            Map<String, Supplier<List<CardModel>>> cardSuppliers = Map.of(
-                    "swsh11-ptbr", Swsh11PtbrCollectionInitializer::getCards,
-                    "swsh12-ptbr", Swsh12PtbrCollectionInitializer::getCards,
-                    "sv10-ptbr", Sv10PtbrCollectionInitializer::getCards
-            );
+            initializerMap.values().forEach(init -> init.setPokemonRepository(pokemonRepository));
 
-            for (String key : collectionSuppliers.keySet()) {
-                CollectionModel collection = collectionSuppliers.get(key).get();
+            for (Map.Entry<String, CollectionInitializer> entry : initializerMap.entrySet()) {
+                CollectionInitializer initializer = entry.getValue();
 
-                Optional<CollectionModel> existing = collectionRepository.findByCodeAndLanguage(collection.getCode(), collection.getLanguage());
+                CollectionModel collection = initializer.getCollection();
+
+                Optional<CollectionModel> existing = collectionRepository.findByCodeAndLanguage(
+                        collection.getCode(), collection.getLanguage()
+                );
 
                 CollectionModel savedCollection;
                 if (existing.isPresent()) {
@@ -286,7 +284,7 @@ public class DataInitializer {
                     savedCollection = collectionRepository.save(collection);
                 }
 
-                List<CardModel> cards = cardSuppliers.get(key).get();
+                List<CardModel> cards = initializer.getCards();
 
                 for (CardModel card : cards) {
                     if (cardRepository.findByCollectionAndNumber(savedCollection, card.getNumber()).isEmpty()) {
@@ -297,8 +295,6 @@ public class DataInitializer {
                     }
                 }
             }
-
-
         };
     }
 

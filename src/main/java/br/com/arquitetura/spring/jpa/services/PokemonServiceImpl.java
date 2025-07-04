@@ -55,7 +55,7 @@ public class PokemonServiceImpl implements PokemonService {
 
             if (pokemonOptional.isPresent()) {
                 throw ResourceFoundException.withMessage(
-                        messageSource, "error.pokemon.id.exists",
+                        messageSource, "error.pokemon.number.exists",
                         new Object[] {pokemonModel.getNumber()},
                         locale
                 );

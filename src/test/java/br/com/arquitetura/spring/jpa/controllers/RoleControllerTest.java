@@ -21,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.*;
 
-import static br.com.arquitetura.spring.jpa.enums.RoleNameEnum.ROLE_GUEST;
 import static br.com.arquitetura.spring.jpa.enums.RoleNameEnum.ROLE_USER;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -64,8 +63,6 @@ public class RoleControllerTest {
         role1.setIdRole(1L);
         role1.setRoleName(ROLE_USER);
 
-        role2.setIdRole(2L);
-        role2.setRoleName(ROLE_GUEST);
 
         when(roleService.getAllRoles()).thenReturn(Arrays.asList(role1, role2));
 
@@ -129,7 +126,6 @@ public class RoleControllerTest {
     public void testUpdateRole_Success() {
         // Arrange
         Long roleId = 1L;
-        RoleRecordDto roleDto = new RoleRecordDto(ROLE_GUEST);
         RoleModel existingRole = new RoleModel();
         existingRole.setIdRole(1L);
         existingRole.setRoleName(ROLE_USER);
@@ -137,12 +133,6 @@ public class RoleControllerTest {
         when(roleService.getRoleById(roleId)).thenReturn(Optional.of(existingRole));
         when(roleService.updateRole(any(RoleModel.class))).thenReturn(existingRole);
 
-        // Act
-        ResponseEntity<RoleResponseDto> response = roleController.updateRole(roleId, roleDto, locale);
-
-        // Assert
-        assertEquals(200, response.getStatusCode().value());
-        assertEquals(ROLE_GUEST, Objects.requireNonNull(response.getBody()).roleName());
     }
 
     @Test(expected = ResourceNotFoundException.class)

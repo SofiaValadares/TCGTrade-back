@@ -9,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import java.util.List;
 import java.util.Optional;
-import static br.com.arquitetura.spring.jpa.enums.RoleNameEnum.ROLE_GUEST;
 import static br.com.arquitetura.spring.jpa.enums.RoleNameEnum.ROLE_USER;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -34,11 +33,8 @@ class RoleServiceImplTest {
         role1.setIdRole(1L);
         role1.setRoleName(ROLE_USER);
 
-        RoleModel role2 = new RoleModel();
-        role2.setIdRole(2L);
-        role2.setRoleName(ROLE_GUEST);
 
-        List<RoleModel> roleList = List.of(role1, role2);
+        List<RoleModel> roleList = List.of(role1);
         when(roleRepository.findAll()).thenReturn(roleList);
 
         // When

@@ -65,6 +65,7 @@ public class WebSecurityConfig {
                                 .requestMatchers(API_PRODUCTS+"/**").authenticated()
                                 .requestMatchers(API_PIECES+"/**").authenticated()
                                 .requestMatchers(API_ROLES+"/**").authenticated()
+                                .requestMatchers(HttpMethod.POST, API_USERS).permitAll()
                                 .requestMatchers(API_USERS+"/**").authenticated()
                                 .requestMatchers("/api/activate").permitAll()
                                 .requestMatchers(API_DOMAINS+"/**").authenticated()

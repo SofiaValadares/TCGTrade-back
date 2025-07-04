@@ -174,6 +174,7 @@ public class UserModel extends AuditModel implements UserDetails, Serializable {
         return roles;
     }
 
+
     public static class LoginRequest {
 
         private String username;

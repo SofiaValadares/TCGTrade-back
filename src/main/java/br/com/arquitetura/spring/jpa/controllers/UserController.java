@@ -84,23 +84,8 @@ public class UserController {
             );
         }
 
-        BeanUtils.copyProperties(userRecordDto, userModel, "roles");
+        BeanUtils.copyProperties(userRecordDto, userModel);
 
-        if (userModel.getAccountNonExpired() == null) userModel.setAccountNonExpired(true);
-        if (userModel.getAccountNonLocked() == null) userModel.setAccountNonLocked(true);
-        if (userModel.getCredentialsNonExpired() == null) userModel.setCredentialsNonExpired(true);
-        if (userModel.getEnabled() == null) userModel.setEnabled(true);
-
-        Set<RoleModel> roles = userRecordDto.roles().stream()
-                .map(roleRequest -> roleService.getRoleByRoleName(roleRequest.getRoleName())
-                        .orElseThrow(() -> ResourceNotFoundException.withMessage(
-                                messageSource, "error.role.name.notfound",
-                                new Object[]{roleRequest.getRoleName()},
-                                locale
-                        )))
-                .collect(Collectors.toSet());
-
-        userModel.setRoles(roles);
         UserModel saveUser = userService.saveUser(userModel);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(mapToUserRoleResponseDto(saveUser));

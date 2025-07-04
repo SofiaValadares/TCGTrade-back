@@ -127,8 +127,7 @@ class UserControllerTest {
         roleModel.setRoleName(RoleNameEnum.valueOf("ROLE_USER"));
         List<RoleModel> roles = List.of(roleModel);
 
-        UserRecordDto userRecordDto = new UserRecordDto("John", "john@example.com", "john123", "senha123",
-                true, true,true,true, roles);
+        UserRecordDto userRecordDto = new UserRecordDto("John", "john123", "senha123");
 
         UserModel userModel = new UserModel();
         userModel.setIdUser(1L);
@@ -157,8 +156,7 @@ class UserControllerTest {
         roleModel.setRoleName(RoleNameEnum.valueOf("ROLE_USER"));
         List<RoleModel> roles = List.of(roleModel);
 
-        UserRecordDto userRecordDto = new UserRecordDto("John", "john@example.com", "john123","senha123",
-                true, true,true,true, roles);
+        UserRecordDto userRecordDto = new UserRecordDto("John", "john123","senha123");
         UserModel userModel = new UserModel();
         userModel.setUsername("john123");
 
